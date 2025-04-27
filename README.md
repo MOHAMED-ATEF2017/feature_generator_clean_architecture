@@ -34,14 +34,14 @@ Install globally using Dart:
     $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
 ```
 
-### 2. If you use it from [GitHub](https://github.com/MOHAMED-ATEF2017/feature_generator)
+### 2. If you use it from [GitHub](https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture)
 
     Add this lines to yaml
 ```
 dependencies:
   feature_generator:
     git:
-      url: https://github.com/MOHAMED-ATEF2017/feature_generator.git
+      url: https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture.git
       path: feature_generator/  # Path to package within repo
       ref: master               # Optional: branch/tag/commit
 ```
