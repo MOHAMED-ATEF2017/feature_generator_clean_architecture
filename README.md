@@ -45,6 +45,11 @@ dependencies:
       path: feature_generator/  # Path to package within repo
       ref: master               # Optional: branch/tag/commit
 ```
+    Or run this at terminal 
+```
+dart pub global activate --source git https://github.com/MOHAMED-ATEF2017/feature_generator.git
+```
+
 # Usage 🚀
 Generate a new feature structure:
 ```
