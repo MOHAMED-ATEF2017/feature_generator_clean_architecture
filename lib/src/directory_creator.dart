@@ -64,7 +64,7 @@ void createFeatureStructure(String featureName) {
 // Function to create specific controller files
 void createControllerFiles(String name) {
   final controllerPath =
-      '${Directory.current.path}/lib/Features/$name/Presentation/Controller';
+      '${Directory.current.path}/lib/features/$name/presentation/controller';
 
   // Define the cubit and state file names
   final cubitFileName = '${name.toLowerCase()}_cubit.dart';
