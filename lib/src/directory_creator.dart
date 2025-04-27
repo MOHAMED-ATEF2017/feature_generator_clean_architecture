@@ -14,18 +14,18 @@ void createFeatureStructure(String featureName) {
   // Get the feature name from command line arguments
   final name = featureName;
   // Project path
-  final projectPath = '${Directory.current.path}/lib/Features/$name';
+  final projectPath = '${Directory.current.path}/lib/features/$name';
 
   // Folder creation
   final directories = [
-    '$projectPath/Data/DataSources',
-    '$projectPath/Data/Models',
-    '$projectPath/Data/Repo',
-    '$projectPath/Domain/Repositories',
-    '$projectPath/Domain/UseCases',
-    '$projectPath/Presentation/Controller',
-    '$projectPath/Presentation/Views',
-    '$projectPath/Presentation/Views/Widgets',
+    '$projectPath/data/data_sources',
+    '$projectPath/data/models',
+    '$projectPath/data/repo',
+    '$projectPath/domain/repositories',
+    '$projectPath/domain/use_cases',
+    '$projectPath/presentation/controller',
+    '$projectPath/presentation/views',
+    '$projectPath/presentation/views/widgets',
   ];
 
   for (var dir in directories) {
