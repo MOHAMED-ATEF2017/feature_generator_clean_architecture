@@ -1,3 +1,6 @@
+// Copyright (c) 2024 MOHAMED ATEF. 
+// Licensed under the MIT License.
+
 import 'dart:io';
 
 void writeCubitCode(File file, String name) {

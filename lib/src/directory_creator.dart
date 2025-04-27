@@ -1,3 +1,6 @@
+// Copyright (c) 2024 MOHAMED ATEF. 
+// Licensed under the MIT License.
+
 // ignore_for_file: avoid_print
 
 import 'dart:io';

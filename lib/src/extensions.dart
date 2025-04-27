@@ -1,3 +1,6 @@
+// Copyright (c) 2024 MOHAMED ATEF. 
+// Licensed under the MIT License.
+
 extension StringCapitalization on String {
   String capitalize() {
     if (isEmpty) return '';

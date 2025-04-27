@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+// Copyright (c) 2024 MOHAMED ATEF. 
+// Licensed under the MIT License.
+
 import 'package:args/args.dart';
 import 'package:feature_generator/src/directory_creator.dart';
 
