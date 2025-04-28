@@ -75,7 +75,7 @@ void createCoreFiles() {
   }
 }
 
-void createFeatureStructure(String featureName) {
+void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   if (featureName.isEmpty) {
     print('Please provide a feature name as an argument.');
     return;
@@ -132,4 +132,41 @@ void createFeatureStructure(String featureName) {
 
   print('Creating folders and files successfully ✓');
   print('Creating files successfully ✓');
+
+    if (installDeps) {
+    _runPostInstallation();
+  }
+}
+void _runPostInstallation() {
+  print('Running post-installation commands...');
+  
+  // Install dependencies
+  Process.runSync('flutter', ['pub', 'add', 
+    'flutter_bloc', 
+    'injectable', 
+    'dartz', 
+    'dio',
+    '--dev', 
+    'build_runner', 
+    'injectable_generator', 
+    
+  ]);
+
+  // Get dependencies
+  Process.runSync('flutter', ['pub', 'get'], 
+    runInShell: true,
+  );
+
+  // Run build_runner
+  final buildResult = Process.runSync(
+    'flutter',
+    ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+    runInShell: true,
+  );
+
+  if (buildResult.exitCode != 0) {
+    print('Error running build_runner: ${buildResult.stderr}');
+  } else {
+    print('Build completed successfully!');
+  }
 }
