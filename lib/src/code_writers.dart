@@ -55,13 +55,13 @@ void writeInitialCode(File file, String fileName, String name) {
   String initialCode = ''; // Default value to avoid uninitialized error
 
   // Determine the initial code based on the file name
-  if (fileName.contains('datasources')) {
+  if (fileName.contains('data_sources')) {
     initialCode = '''
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import '/Core/API/api_endpoints.dart';
-import '/Core/API/api_headers.dart';
-import '/Core/API/api_helper.dart';
+import '/core/api_helper/api_endpoints.dart';
+import '/core/api_helper/api_headers.dart';
+import '/core/api_helper/api_helper.dart';
 
 abstract class ${fileName.split('_').first.capitalize()}RemoteDataSource {
   Future<${fileName.split('_').first.capitalize()}Model> get${fileName.split('_').first.capitalize()}();
@@ -85,7 +85,7 @@ class ${fileName.split('_').first.capitalize()}RemoteDataSourceImplementation ex
 ''';
   } else if (fileName.contains('models')) {
     initialCode = '';
-  } else if (file.path.contains('Data') && fileName.contains('repo')) {
+  } else if (file.path.contains('data') && fileName.contains('repo')) {
     initialCode = '''
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -113,7 +113,7 @@ class ${fileName.split('_').first.capitalize()}RepoImpl extends ${fileName.split
   }
 }
 ''';
-  } else if (file.path.contains('Domain/Repositories')) {
+  } else if (file.path.contains('domain/repositories')) {
     initialCode = '''
 import 'package:dartz/dartz.dart';
 import '/Core/Errors/failure.dart';
@@ -122,7 +122,7 @@ abstract class ${fileName.split('_').first.capitalize()}Repository {
   Future<Either<Failure, ${fileName.split('_').first.capitalize()}Model>> get${fileName.split('_').first.capitalize()}();
 }
 ''';
-  } else if (fileName.contains('usecases')) {
+  } else if (fileName.contains('use_cases')) {
     initialCode = '''
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
