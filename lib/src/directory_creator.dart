@@ -3,17 +3,15 @@
 
 // ignore_for_file: avoid_print
 
-/// {@template feature_generator}
-/// A CLI tool for generating Clean Architecture feature structures
-/// 
-/// Usage:
-/// ```bash
-/// feature_generator create --name <FEATURE_NAME>
-/// ```
-/// {@endtemplate}
 import 'dart:io';
 
 import 'package:feature_generator/src/code_writers.dart';
+
+/// Writes featue files and directories to the specified path.
+/// 
+/// ```dart
+/// createControllerFiles('Auth');
+/// ```
 
 // Function to create specific controller files
 void createControllerFiles(String name) {
@@ -46,6 +44,13 @@ void createControllerFiles(String name) {
     print('File already exists: $stateFilePath');
   }  
 }
+
+
+/// Writes core files and directories to the specified path.
+/// 
+/// ```dart
+/// createCoreFiles();
+/// ```
 
 void createCoreFiles() {
   final coreDirectories = [
@@ -83,6 +88,7 @@ void createCoreFiles() {
   }
 }
 
+/// Creates a feature structure with the specified name and optional dependencies.
 void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   if (featureName.isEmpty) {
     print('Please provide a feature name as an argument.');
@@ -145,6 +151,9 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
     _runPostInstallation();
   }
 }
+
+
+/// Writes initial code to the specified file.
 void _runCommand(String command, List<String> args) {
   print('\n🏃 Running: $command ${args.join(' ')}');
   final result = Process.runSync(
@@ -164,6 +173,7 @@ void _runCommand(String command, List<String> args) {
   print(result.stdout);
 }
 
+/// Runs post-installation tasks such as adding dependencies and running build_runner.
 void _runPostInstallation() {
   try {
     final isWindows = Platform.isWindows;

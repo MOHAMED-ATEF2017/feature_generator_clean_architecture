@@ -1,9 +1,16 @@
 // Copyright (c) 2024 MOHAMED ATEF. 
-// Licensed under the MIT License.
+// Licensed under the BSD License.
+/// {@category Code Generation}
+
 
 import 'dart:io';
 
 import 'package:feature_generator/src/extensions.dart';
+/// Writes Cubit boilerplate code to a file
+/// 
+/// ```dart
+/// writeCubitCode(file, 'Auth');
+/// ```
 
 //*________________ Function to write initial code to the cubit file __________________*//
 void writeCubitCode(File file, String name) {
@@ -49,6 +56,11 @@ class ${name.capitalize()}Cubit extends Cubit<${name.capitalize()}State> {
   file.writeAsStringSync(initialCode);
 }
 
+/// Writes initial boilerplate code to a file
+/// 
+/// ```dart
+/// writeInitialCode(File file, String fileName, String name);
+/// ```
 
 //*_______________ Function to write initial code to the Dart file based on its name _______________*//
 void writeInitialCode(File file, String fileName, String name) {
@@ -175,6 +187,12 @@ class ${fileName.split('_').first.capitalize()}Widget extends StatelessWidget {
   file.writeAsStringSync(initialCode);
 }
 
+/// Writes BLoc states code to a file
+/// 
+/// ```dart
+/// writeStateCode(file, 'Auth');
+/// ```
+
 //*______________ Function to write initial code to the state file ________________*//
 void writeStateCode(File file, String name) {
   final String initialCode = '''
@@ -200,6 +218,12 @@ final class ${name.capitalize()}StateFailed extends ${name.capitalize()}State {
   // Write the initial code to the file
   file.writeAsStringSync(initialCode);
 }
+
+/// Writes Core Failure code to a file
+/// 
+/// ```dart
+/// writeCoreFailureCode(file);
+/// ```
 
 //*________________ Function to write initial code to failure file __________________*//
 void writeCoreFailureCode(File failureFile) {
@@ -254,6 +278,13 @@ class ServerFailure extends Failure {
 ''');
  
 }
+
+/// Writes Core Use Case code to a file
+/// 
+/// ```dart
+/// writeCoreUseCaseCode(file, 'Auth');
+/// ```
+
 //*________________ Function to write initial code to failure file __________________*//
 void writeCoreUseCaseCode(File useCaseFile) {
  useCaseFile.writeAsStringSync('''
