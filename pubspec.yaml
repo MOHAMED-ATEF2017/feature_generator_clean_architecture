@@ -1,6 +1,6 @@
 name: feature_generator
 description: A CLI tool to generate Clean Architecture feature structure for Flutter projects
-version: 1.0.3
+version: 1.0.4
 license: BSD-3-Clause
 repository: https://github.com/MOHAMED-ATEF2017/feature_generator.git
 # repository: https://github.com/my_org/my_repo
