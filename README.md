@@ -355,4 +355,4 @@ flutter pub get
 5. Open a Pull Request
 
 # License 📄
-This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/licenses/MIT) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://pub.dev/packages/feature_generator/license) file for details.
