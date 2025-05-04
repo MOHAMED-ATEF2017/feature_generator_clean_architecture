@@ -2,7 +2,7 @@
 
 [![Pub Version](https://img.shields.io/pub/v/feature_generator)](https://pub.dev/packages/feature_generator)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/MOHAMED-ATEF2017/feature_generator/dart.yml)](https://github.com/MOHAMED-ATEF2017/feature_generator/actions)
-[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://pub.dev/packages/feature_generator/license)
 
 A command-line interface (CLI) tool that accelerates Flutter development by generating Clean Architecture folder structures with boilerplate code for BLoC/Cubit state management.
 
@@ -20,7 +20,7 @@ A command-line interface (CLI) tool that accelerates Flutter development by gene
 # Installation 💻
 
 Install globally using Dart:
-### 1. If you use it from [pub.dev](https://pub.dev)
+### 1. If you use it from [pub.dev](https://pub.dev/packages/feature_generator)
 
 ```bash
     dart pub global activate feature_generator
