@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the createFeatureStructure function from the feature_generator library, for the Dart programming language.">
+  <title>createFeatureStructure function - feature_generator library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">feature_generator</a></li>
+    <li><a href="../feature_generator/">feature_generator.dart</a></li>
+    <li class="self-crumb">createFeatureStructure function</li>
+  </ol>
+  <div class="self-name">createFeatureStructure</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="feature_generator&#47;feature_generator-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">createFeatureStructure</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype">void</span>
+<span class="name ">createFeatureStructure</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="createFeatureStructure-param-featureName"><span class="type-annotation">String</span> <span class="parameter-name">featureName</span>, {</span></li>
+<li><span class="parameter" id="createFeatureStructure-param-installDeps"><span class="type-annotation">bool</span> <span class="parameter-name">installDeps</span> = <span class="default-value">false</span>, </span></li>
+</ol>})
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Creates a feature structure with the specified name and optional dependencies.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">void createFeatureStructure(String featureName ,{bool installDeps = false}) {
+  if (featureName.isEmpty) {
+    print(&#39;Please provide a feature name as an argument.&#39;);
+    return;
+  }
+
+  &#47;&#47; Create core directories and files first
+  createCoreFiles();
+
+  &#47;&#47; Get the feature name from command line arguments
+  final name = featureName;
+  &#47;&#47; Project path
+  final projectPath = &#39;${Directory.current.path}&#47;lib&#47;features&#47;$name&#39;;
+
+  &#47;&#47; Folder creation
+  final directories = [
+    &#39;$projectPath&#47;data&#47;data_sources&#39;,
+    &#39;$projectPath&#47;data&#47;models&#39;,
+    &#39;$projectPath&#47;data&#47;repo&#39;,
+    &#39;$projectPath&#47;domain&#47;repositories&#39;,
+    &#39;$projectPath&#47;domain&#47;use_cases&#39;,
+    &#39;$projectPath&#47;presentation&#47;controller&#39;,
+    &#39;$projectPath&#47;presentation&#47;views&#39;,
+    &#39;$projectPath&#47;presentation&#47;views&#47;widgets&#39;,
+  ];
+
+  for (var dir in directories) {
+    final directory = Directory(dir);
+
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+      print(&#39;Created: $dir ✓&#39;);
+    } else {
+      print(&#39;Directory already exists: $dir &#39;);
+    }
+
+    &#47;&#47; Create a Dart file in each directory
+    final fileName =
+        &#39;${name.toLowerCase()}_${dir.split(&#39;&#47;&#39;).last.toLowerCase()}.dart&#39;; &#47;&#47; Creating a unique file name
+    final filePath = &#39;$dir&#47;$fileName&#39;;
+
+    final file = File(filePath);
+
+    &#47;&#47; Create the file if it doesn&#39;t exist
+    if (!file.existsSync()) {
+      file.createSync();
+      print(&#39;Created file: $filePath ✓&#39;);
+      writeInitialCode(file, fileName, name);
+    } else {
+      print(&#39;File already exists: $filePath&#39;);
+    }
+  }
+&#47;&#47; Call the function to create controller files
+  createControllerFiles(name);
+
+  print(&#39;Creating folders and files successfully ✓&#39;);
+  print(&#39;Creating files successfully ✓&#39;);
+
+    if (installDeps) {
+    _runPostInstallation();
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">feature_generator</a></li>
+    <li><a href="../feature_generator/">feature_generator</a></li>
+    <li class="self-crumb">createFeatureStructure function</li>
+</ol>
+
+    <h5>feature_generator library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    feature_generator
+      1.0.5
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
