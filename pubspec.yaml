@@ -12,7 +12,7 @@ environment:
 dependencies:
   path: ^1.9.1 
   args: ^2.7.0
-  flutter_bloc: ^9.1.0 
+  flutter_bloc: ^9.1.1 
   injectable: ^2.5.0
   dartz: ^0.10.1
   dio: ^5.8.0+1

@@ -138,35 +138,64 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   }
 }
 void _runPostInstallation() {
-  print('Running post-installation commands...');
-  
-  // Install dependencies
-  Process.runSync('flutter', ['pub', 'add', 
-    'flutter_bloc', 
-    'injectable', 
-    'dartz', 
-    'dio',
-    '--dev', 
-    'build_runner', 
-    'injectable_generator', 
-    
-  ]);
+  try {
+    final isWindows = Platform.isWindows;
+    final flutterExecutable = isWindows ? 'flutter.bat' : 'flutter';
+    final currentDir = Directory.current.path;
 
-  // Get dependencies
-  Process.runSync('flutter', ['pub', 'get'], 
-    runInShell: true,
-  );
+    print('🔧 Verifying Flutter installation...');
+    final flutterCheck = Process.runSync(
+      flutterExecutable,
+      ['--version'],
+      runInShell: true,
+    );
 
-  // Run build_runner
-  final buildResult = Process.runSync(
-    'flutter',
-    ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-    runInShell: true,
-  );
+    if (flutterCheck.exitCode != 0) {
+      print('''
+❌ Flutter not found in PATH!
+Please ensure Flutter is installed and available in your system PATH.
+Installation guide: https://flutter.dev/docs/get-started/install
+''');
+      return;
+    }
 
-  if (buildResult.exitCode != 0) {
-    print('Error running build_runner: ${buildResult.stderr}');
-  } else {
-    print('Build completed successfully!');
+    print('📦 Adding dependencies...');
+    _runCommand(flutterExecutable, ['pub', 'add', 'flutter_bloc', 'injectable', 'dartz', 'dio']);
+    _runCommand(flutterExecutable, ['pub', 'add', '--dev', 'build_runner', 'injectable_generator', 'intl_utils', 'flutter_gen_runner', 'flutter_lints']);
+
+    print('🚀 Running build_runner...');
+    _runCommand(flutterExecutable, ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs']);
+
+  } catch (e) {
+    print('''
+⚠️ Error during post-installation:
+$e
+
+💡 Troubleshooting steps:
+1. Ensure Flutter is installed and in your PATH
+2. Run manually:
+   - flutter pub add flutter_bloc injectable dartz dio
+   - flutter pub add --dev build_runner injectable_generator
+   - flutter pub run build_runner build
+''');
   }
+}
+
+void _runCommand(String command, List<String> args) {
+  print('\n🏃 Running: $command ${args.join(' ')}');
+  final result = Process.runSync(
+    command,
+    args,
+    runInShell: true,
+    workingDirectory: Directory.current.path,
+  );
+
+  if (result.exitCode != 0) {
+    print('❌ Command failed:');
+    print(result.stderr);
+    throw Exception('Command failed: $command ${args.join(' ')}');
+  }
+  
+  print('✅ Command succeeded');
+  print(result.stdout);
 }
