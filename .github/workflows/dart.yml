@@ -33,7 +33,10 @@ jobs:
         run: dart analyze .
 
       - name: Run tests
-        run: dart test
+        run: dart test 
+
+      - name: Validate documentation
+        run: dartdoc --validate-links --errors all --warnings all
 
   publish:
     needs: test

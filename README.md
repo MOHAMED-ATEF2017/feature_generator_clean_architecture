@@ -25,18 +25,19 @@ Install globally using Dart:
 ```bash
     dart pub global activate feature_generator
  ```
-     For Bash/Zsh
+For Bash/Zsh
+
  ```bash
     export PATH="$PATH:$HOME/.pub-cache/bin"
 ```
-    For PowerShell
+For PowerShell
 ```bash
     $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
 ```
 
 ### 2. If you use it from [GitHub](https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture)
 
-    Add this lines to yaml
+  Add this lines to yaml
 ```yaml
 dependencies:
   feature_generator:
@@ -45,7 +46,7 @@ dependencies:
       path: feature_generator/  # Path to package within repo
       ref: master               # Optional: branch/tag/commit
 ```
-    Or run this at terminal 
+  Or run this at terminal 
 ```bash
 dart pub global activate --source git https://github.com/MOHAMED-ATEF2017/feature_generator.git
 ```
@@ -53,11 +54,11 @@ dart pub global activate --source git https://github.com/MOHAMED-ATEF2017/featur
 # Usage 🚀
 Generate a feature structure with optional automatic dependency installation:
 ```bash
-feature_generator create --name <FEATURE_NAME>
-
+    feature_generator create --name <FEATURE_NAME>
+```
 OR
-
-feature_generator create --name <FEATURE_NAME> [--install-deps]
+```bash
+    feature_generator create --name <FEATURE_NAME> [--install-deps]
 ```
 ## Example:
 
@@ -75,6 +76,12 @@ lib/features/user_profile/
 ├── Domain/
 └── Presentation/
 ``` -->
+# Feature Generator Example
+
+Generate sample features:
+```bash
+dart example/example_usage.dart
+```
 
 # Generated Structure 🌳
 ```

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="feature_generator API docs, for the Dart programming language.">
+  <title>feature_generator - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">feature_generator package</li>
+  </ol>
+  <div class="self-name">feature_generator</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="feature-generator-">Feature Generator 🛠️</h1>
+<p><a href="https://pub.dev/packages/feature_generator"><img src="https://img.shields.io/pub/v/feature_generator" alt="Pub Version"></a>
+<a href="https://github.com/MOHAMED-ATEF2017/feature_generator/actions"><img src="https://img.shields.io/github/actions/workflow/status/MOHAMED-ATEF2017/feature_generator/dart.yml" alt="Build Status"></a>
+<a href="https://pub.dev/packages/feature_generator/license"><img src="https://img.shields.io/badge/License-BSD_3--Clause-blue.svg" alt="License"></a></p>
+<p>A command-line interface (CLI) tool that accelerates Flutter development by generating Clean Architecture folder structures with boilerplate code for BLoC/Cubit state management.</p>
+<h1 id="table-of-contents-">Table of Contents 📑</h1>
+<ul>
+<li><a href="#installation-">Installation</a></li>
+<li><a href="#usage-">Usage</a></li>
+<li><a href="#generated-structure-">Generated Structure</a></li>
+<li><a href="#example-">Example</a></li>
+<li><a href="#dependencies-">Dependencies</a></li>
+<li><a href="#configuration-">Configuration</a></li>
+<li><a href="#troubleshooting-">Troubleshooting</a></li>
+<li><a href="#contributing-">Contributing</a></li>
+<li><a href="#license-">License</a></li>
+</ul>
+<h1 id="installation-">Installation 💻</h1>
+<p>Install globally using Dart:</p>
+<h3 id="1-if-you-use-it-from-pubdevhttpspubdevpackagesfeature_generator">1. If you use it from <a href="https://pub.dev/packages/feature_generator">pub.dev</a></h3>
+<pre class="language-bash"><code class="language-bash">    dart pub global activate feature_generator
+</code></pre>
+<p>For Bash/Zsh</p>
+<pre class="language-bash"><code class="language-bash">   export PATH="$PATH:$HOME/.pub-cache/bin"
+</code></pre>
+<p>For PowerShell</p>
+<pre class="language-bash"><code class="language-bash">    $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
+</code></pre>
+<h3 id="2-if-you-use-it-from-githubhttpsgithubcommohamed-atef2017feature_generator_clean_architecture">2. If you use it from <a href="https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture">GitHub</a></h3>
+<p>Add this lines to yaml</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  feature_generator:
+    git:
+      url: https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture.git
+      path: feature_generator/  # Path to package within repo
+      ref: master               # Optional: branch/tag/commit
+</code></pre>
+<p>Or run this at terminal</p>
+<pre class="language-bash"><code class="language-bash">dart pub global activate --source git https://github.com/MOHAMED-ATEF2017/feature_generator.git
+</code></pre>
+<h1 id="usage-">Usage 🚀</h1>
+<p>Generate a feature structure with optional automatic dependency installation:</p>
+<pre class="language-bash"><code class="language-bash">    feature_generator create --name &lt;FEATURE_NAME&gt;
+</code></pre>
+<p>OR</p>
+<pre class="language-bash"><code class="language-bash">    feature_generator create --name &lt;FEATURE_NAME&gt; [--install-deps]
+</code></pre>
+<h2 id="example">Example:</h2>
+<pre class="language-bash"><code class="language-bash"># Without automatic installation
+feature_generator create --name Auth
+
+# With full automatic installation
+feature_generator create --name Auth --install-deps
+</code></pre>
+<!-- ## This creates:
+```
+lib/features/user_profile/
+├── Data/
+├── Domain/
+└── Presentation/
+``` -->
+<h1 id="feature-generator-example">Feature Generator Example</h1>
+<p>Generate sample features:</p>
+<pre class="language-bash"><code class="language-bash">dart example/example_usage.dart
+</code></pre>
+<h1 id="generated-structure-">Generated Structure 🌳</h1>
+<pre class="language-dart"><code>lib/
+├── core/ # Shared project components
+│ ├── errors/ # Custom error classes
+│ │ └── failure.dart # Failure type definitions
+│ └── use_cases/ # Base use case classes
+│ └── use_case.dart # Abstract UseCase template
+│
+└── features/ # Feature modules
+└── &lt;feature_name&gt;/ # Generated feature name
+├── Data/
+│ ├── DataSources/ # API/Remote data sources
+│ ├── Models/ # Data model classes
+│ └── Repo/ # Repository implementations
+│
+├── Domain/
+│ ├── Repositories/ # Abstract repository contracts
+│ └── UseCases/ # Business logic components
+│
+└── Presentation/
+├── Controller/ # BLoC/Cubit + State classes
+└── Views/
+├── Screens/ # Full page views
+└── Widgets/ # Reusable components
+</code></pre>
+<p>Key additions:</p>
+<ol>
+<li>Core directory structure shown at project root level</li>
+<li>Explicit paths for critical base files</li>
+<li>Clear separation between shared core components and feature modules</li>
+</ol>
+<p>The core directory will be generated once during the first feature creation. Subsequent features will reuse these core components.</p>
+<p><strong>Example Core Files</strong> section added:
+markdown</p>
+<h2 id="core-components-">Core Components 🔨</h2>
+<h3 id="failure-class-libcoreerrorsfailuredart">Failure Class (<code>lib/core/errors/failure.dart</code>)</h3>
+<pre class="language-dart"><code class="language-dart">abstract class Failure {
+  final String message;
+  const Failure(this.message);
+}
+
+class ServerFailure extends Failure {
+  ServerFailure(String message) : super(message);
+}
+
+</code></pre>
+<h1 id="example-code-">Example Code 🧑💻</h1>
+<h2 id="1-cubit-file-user_profile_cubitdart">1. Cubit File (user_profile_cubit.dart):</h2>
+<pre class="language-dart"><code class="language-dart">@injectable
+class UserProfileCubit extends Cubit&lt;UserProfileState&gt; {
+  final FetchUserProfileUseCase fetchUserProfileUseCase;
+  
+  UserProfileCubit(this.fetchUserProfileUseCase) 
+    : super(UserProfileInitial());
+
+  Future&lt;void&gt; loadProfile() async {
+    emit(UserProfileLoading());
+    // ... cubit logic
+  }
+
+</code></pre>
+<h2 id="2-repository-contract-user_profile_repositorydart">2. Repository Contract (user_profile_repository.dart):</h2>
+<pre class="language-dart"><code class="language-dart">abstract class UserProfileRepository {
+  Future&lt;Either&lt;Failure, UserProfileModel&gt;&gt; getProfile();
+}
+</code></pre>
+<h2 id="3-usecase-template-libcoreuse_casesuse_casedart">3. UseCase Template (lib/core/use_cases/use_case.dart):</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:dartz/dartz.dart';
+import '../Errors/failure.dart';
+
+abstract class UseCases&lt;Type&gt; {
+  Future&lt;Either&lt;Failure, Type&gt;&gt; call();
+}
+
+abstract class UseCasesWithParamater&lt;Type, Parameter&gt; {
+  Future&lt;Either&lt;Failure, Type&gt;&gt; call(Parameter parameter);
+}
+</code></pre>
+<h2 id="4-failure-libcoreerrorsfailuredart-">4. Failure (lib/core/errors/failure.dart) :</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:dio/dio.dart';
+
+class Failure {
+  final String message;
+
+  Failure({required this.message});
+}
+
+class ServerFailure extends Failure {
+  ServerFailure({required super.message});
+
+  factory ServerFailure.fromBadResponse(Response response) {
+    if (response.statusCode == 404) {
+      return ServerFailure(
+          message: 'Your request was not found, Please try later');
+    } else if (response.statusCode == 500) {
+      return ServerFailure(
+          message: 'There are errors with server, Please try later');
+    } else if (response.statusCode == 400 ||
+        response.statusCode == 401 ||
+        response.statusCode == 403) {
+      return ServerFailure(message: response.statusMessage.toString());
+    } else {
+      return ServerFailure(message: 'Please try later');
+    }
+  }
+  factory ServerFailure.fromDioException(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        return ServerFailure(message: 'Connection timed out');
+      case DioExceptionType.sendTimeout:
+        return ServerFailure(message: 'Connection send timed out');
+      case DioExceptionType.receiveTimeout:
+        return ServerFailure(message: 'Connection received timed out');
+      case DioExceptionType.badCertificate:
+        return ServerFailure(message: 'Bad certification error');
+      case DioExceptionType.badResponse:
+        return ServerFailure.fromBadResponse(e.response!);
+      case DioExceptionType.cancel:
+        return ServerFailure(message: 'Connection canceled');
+      case DioExceptionType.connectionError:
+        return ServerFailure(message: 'Connection Error');
+      case DioExceptionType.unknown:
+        return ServerFailure(message: 'Unknown Error');
+    }
+  }
+}
+</code></pre>
+<h2 id="5-data-source-featursfeaturenamedatadata_sourcesfeaturename_data_sourcedart">5. Data Source (featurs/<em>FeatureName</em>/data/data_sources/<em>featurename</em>_data_source.dart):</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import '/core/api_helper/api_endpoints.dart';
+import '/core/api_helper/api_headers.dart';
+import '/core/api_helper/api_helper.dart';
+
+abstract class FeatureNameRemoteDataSource {
+  Future&lt;FeatureNameModel&gt; getFeatureName();
+}
+
+@Singleton(as: FeatureNameRemoteDataSource)
+class FeatureNameRemoteDataSourceImplementation extends FeatureNameRemoteDataSource {
+  late FeatureNameModel FeatureNameModel;
+  late Response response;
+  final DioHelper dioHelper ;
+  FeatureNameRemoteDataSourceImplementation({required this.dioHelper});
+
+  @override
+  Future&lt;FeatureNameModel&gt; getFeatureName() async {
+    response = await dioHelper.getData(ApisEndPoints.kGetFeatureNameDataUrl,
+        headers: headersMapWithToken());
+    FeatureNameModel = FeatureNameModel.fromJson(response.data ?? {});
+    return FeatureNameModel;
+  }
+}
+</code></pre>
+<h2 id="6-data-reporepository-featursfeaturenamedatarepofeaturename_repodart">6. Data RepoRepository (featurs/<em>FeatureName</em>/data/repo/<em>featurename</em>_repo.dart):</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import '/Core/Errors/failure.dart';
+
+@Singleton(as: FEATURENAMERepository)
+class FEATURENAMERepoImpl extends FEATURENAMERepository {
+  final FEATURENAMERemoteDataSource remoteDataSource;
+
+  FEATURENAMERepoImpl({required this.remoteDataSource});
+
+  @override
+  Future&lt;Either&lt;Failure, FEATURENAMEModel&gt;&gt; getFEATURENAME() async {
+    try {
+      FEATURENAMEModel request = await remoteDataSource.getFEATURENAME();
+      return right(request);
+    } on Exception catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioException(e));
+      } else {
+        return left(ServerFailure(message: e.toString()));
+      }
+    }
+  }
+}
+</code></pre>
+<h2 id="7-domain-repository-featursfeaturenamedomainrepositoriesfeaturename_repositorydart">7. Domain Repository (featurs/<em>FeatureName</em>/domain/repositories/<em>featurename</em>_repository.dart):</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:dartz/dartz.dart';
+import '/Core/Errors/failure.dart';
+
+abstract class FEATURENAMERepository {
+  Future&lt;Either&lt;Failure, FEATURENAMEModel&gt;&gt; getFEATURENAME();
+}
+</code></pre>
+<h2 id="7-domain-usecases-featursfeaturenamedomainuse_casesfeaturename_use_case_dart">7. Domain UseCases (featurs/<em>FeatureName</em>/domain/use_cases/<em>featurename</em><em>use_case</em>.dart):</h2>
+<pre class="language-dart"><code class="language-dart">import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import '/Core/Errors/failure.dart';
+import '/Core/UseCase/use_case.dart';
+
+@lazySingleton
+class FetchFEATURENAMEUseCase extends UseCases&lt;FEATURENAMEModel&gt; {
+  final FEATURENAMERepository FEATURENAMERepository;
+
+  FetchFEATURENAMEUseCase({required this.FEATURENAMERepository});
+  @override
+  Future&lt;Either&lt;Failure, FEATURENAMEModel&gt;&gt; call() async {
+    return await FEATURENAMERepository.getFEATURENAME();
+  }
+}
+</code></pre>
+<h1 id="dependencies-">Dependencies 📦</h1>
+<p>These dependencies will added to your pubspec.yaml:</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  flutter_bloc: 
+  injectable: 
+  dartz: 
+  dio: 
+
+dev_dependencies:
+  build_runner: 
+  injectable_generator: 
+</code></pre>
+<p>Run after code generation:</p>
+<pre class="language-bash"><code class="language-bash">flutter pub run build_runner build --delete-conflicting-outputs
+</code></pre>
+<h1 id="configuration-">Configuration ⚙️</h1>
+<p>Create feature_config.json for custom templates:</p>
+<pre class="language-dart"><code>{
+  "base_path": "lib/modules",
+  "use_freezed": true,
+  "add_routing": false
+}
+</code></pre>
+<h1 id="troubleshooting-">Troubleshooting 🔧</h1>
+<h3 id="issue-command-not-found">Issue: Command not found</h3>
+<p># Verify installation</p>
+<pre class="language-dart"><code class="language-dart">dart pub global list
+</code></pre>
+<p># Check PATH configuration</p>
+<pre class="language-bash"><code class="language-bash">echo $PATH
+</code></pre>
+<h3 id="issue-missing-dependencies">Issue: Missing dependencies</h3>
+<pre class="language-dart"><code class="language-dart">flutter clean
+flutter pub get
+</code></pre>
+<h1 id="contributing-">Contributing 🤝</h1>
+<ol>
+<li>
+<p>Fork the repository</p>
+</li>
+<li>
+<p>Create feature branch (git checkout -b feature/improve-generator)</p>
+</li>
+<li>
+<p>Commit changes (git commit -m 'Add template customization')</p>
+</li>
+<li>
+<p>Push to branch (git push origin feature/improve-generator)</p>
+</li>
+<li>
+<p>Open a Pull Request</p>
+</li>
+</ol>
+<h1 id="license-">License 📄</h1>
+<p>This project is licensed under the MIT License - see the <a href="https://pub.dev/packages/feature_generator/license">LICENSE</a> file for details.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">feature_generator package</li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">feature_generator</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    feature_generator
+      1.0.2
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

@@ -3,6 +3,14 @@
 
 // ignore_for_file: avoid_print
 
+/// {@template feature_generator}
+/// A CLI tool for generating Clean Architecture feature structures
+/// 
+/// Usage:
+/// ```bash
+/// feature_generator create --name <FEATURE_NAME>
+/// ```
+/// {@endtemplate}
 import 'dart:io';
 
 import 'package:feature_generator/src/code_writers.dart';
