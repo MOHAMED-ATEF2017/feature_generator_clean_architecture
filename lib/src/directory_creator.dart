@@ -137,11 +137,29 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
     _runPostInstallation();
   }
 }
+void _runCommand(String command, List<String> args) {
+  print('\n🏃 Running: $command ${args.join(' ')}');
+  final result = Process.runSync(
+    command,
+    args,
+    runInShell: true,
+    workingDirectory: Directory.current.path,
+  );
+
+  if (result.exitCode != 0) {
+    print('❌ Command failed:');
+    print(result.stderr);
+    throw Exception('Command failed: $command ${args.join(' ')}');
+  }
+
+  print('✅ Command succeeded');
+  print(result.stdout);
+}
+
 void _runPostInstallation() {
   try {
     final isWindows = Platform.isWindows;
     final flutterExecutable = isWindows ? 'flutter.bat' : 'flutter';
-    final currentDir = Directory.current.path;
 
     print('🔧 Verifying Flutter installation...');
     final flutterCheck = Process.runSync(
@@ -179,23 +197,4 @@ $e
    - flutter pub run build_runner build
 ''');
   }
-}
-
-void _runCommand(String command, List<String> args) {
-  print('\n🏃 Running: $command ${args.join(' ')}');
-  final result = Process.runSync(
-    command,
-    args,
-    runInShell: true,
-    workingDirectory: Directory.current.path,
-  );
-
-  if (result.exitCode != 0) {
-    print('❌ Command failed:');
-    print(result.stderr);
-    throw Exception('Command failed: $command ${args.join(' ')}');
-  }
-  
-  print('✅ Command succeeded');
-  print(result.stdout);
 }
