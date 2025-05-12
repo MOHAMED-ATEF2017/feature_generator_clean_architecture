@@ -83,8 +83,7 @@ import &#39;package:dartz&#47;dartz.dart&#39;;
 import &#39;package:flutter&#47;material.dart&#39;;
 import &#39;package:flutter_bloc&#47;flutter_bloc.dart&#39;;
 import &#39;package:injectable&#47;injectable.dart&#39;;
-import &#39;&#47;Core&#47;Errors&#47;failure.dart&#39;;
-import &#39;&#47;Core&#47;Extensions&#47;toast.dart&#39;;
+import &#39;&#47;core&#47;errors&#47;failure.dart&#39;;
 
 part &#39;${name.toLowerCase()}_state.dart&#39;;
 
@@ -100,7 +99,7 @@ class ${name.capitalize()}Cubit extends Cubit&lt;${name.capitalize()}State&gt; {
     Either&lt;Failure, ${name.capitalize()}Model&gt; result = await fetch${name.capitalize()}UseCase.call();
     result.fold(
       (l) {
-        ctx.customToast(l.message);
+        &#47;&#47;TODO : write the code which will woek at failed case
         emit(${name.capitalize()}StateFailed(message: l.message));
       },
       (request) {

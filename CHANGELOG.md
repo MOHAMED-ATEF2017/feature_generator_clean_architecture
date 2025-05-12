@@ -1,3 +1,4 @@
-## 1.0.5
+## 1.0.6
 
-- Update Documentation
+- Make a core files created only at fist time with installing dependencies
+- Modify readme.md 

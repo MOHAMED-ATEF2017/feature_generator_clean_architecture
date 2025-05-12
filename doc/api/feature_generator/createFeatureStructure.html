@@ -81,7 +81,7 @@
   }
 
   &#47;&#47; Create core directories and files first
-  createCoreFiles();
+  if(installDeps) createCoreFiles();
 
   &#47;&#47; Get the feature name from command line arguments
   final name = featureName;

@@ -65,7 +65,8 @@
 </ul>
 <h1 id="installation-">Installation 💻</h1>
 <p>Install globally using Dart:</p>
-<h3 id="1-if-you-use-it-from-pubdevhttpspubdevpackagesfeature_generator">1. If you use it from <a href="https://pub.dev/packages/feature_generator">pub.dev</a></h3>
+<h3 id="1-downloaded-it-from-pubdevhttpspubdevpackagesfeature_generator">1. Downloaded it from <a href="https://pub.dev/packages/feature_generator">pub.dev</a></h3>
+<p>then run this code at terminal:</p>
 <pre class="language-bash"><code class="language-bash">    dart pub global activate feature_generator
 </code></pre>
 <p>For Bash/Zsh</p>
@@ -74,68 +75,99 @@
 <p>For PowerShell</p>
 <pre class="language-bash"><code class="language-bash">    $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
 </code></pre>
-<h3 id="2-if-you-use-it-from-githubhttpsgithubcommohamed-atef2017feature_generator_clean_architecture">2. If you use it from <a href="https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture">GitHub</a></h3>
-<p>Add this lines to yaml</p>
-<pre class="language-yaml"><code class="language-yaml">dependencies:
-  feature_generator:
-    git:
-      url: https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture.git
-      path: feature_generator/  # Path to package within repo
-      ref: master               # Optional: branch/tag/commit
-</code></pre>
-<p>Or run this at terminal</p>
-<pre class="language-bash"><code class="language-bash">dart pub global activate --source git https://github.com/MOHAMED-ATEF2017/feature_generator.git
-</code></pre>
 <h1 id="usage-">Usage 🚀</h1>
 <p>Generate a feature structure with optional automatic dependency installation:</p>
-<pre class="language-bash"><code class="language-bash">    feature_generator create --name &lt;FEATURE_NAME&gt;
-</code></pre>
-<p>OR</p>
-<pre class="language-bash"><code class="language-bash">    feature_generator create --name &lt;FEATURE_NAME&gt; [--install-deps]
-</code></pre>
+<p>At first , run :
+feature_generator create --name &lt;FEATURE_NAME&gt; <code>--install-deps</code>
+Then:
+  feature_generator create --name &lt;FEATURE_NAME&gt;</p>
 <h2 id="example">Example:</h2>
-<pre class="language-bash"><code class="language-bash"># Without automatic installation
-feature_generator create --name Auth
-
-# With full automatic installation
-feature_generator create --name Auth --install-deps
+<p>Core folders (<code>lib/core/</code>) are only created when using the <code>--install-deps</code> flag:</p>
+<ul>
+<li>First run With full automatic installation for installing the used packages</li>
+</ul>
+<pre class="language-bash"><code class="language-bash">feature_generator create --name Auth --install-deps
 </code></pre>
-<!-- ## This creates:
-```
-lib/features/user_profile/
-├── Data/
-├── Domain/
-└── Presentation/
-``` -->
-<h1 id="feature-generator-example">Feature Generator Example</h1>
-<p>Generate sample features:</p>
-<pre class="language-bash"><code class="language-bash">dart example/example_usage.dart
+<ul>
+<li>After that use</li>
+</ul>
+<pre class="language-bash"><code class="language-bash">feature_generator create --name Auth
 </code></pre>
 <h1 id="generated-structure-">Generated Structure 🌳</h1>
-<pre class="language-dart"><code>lib/
-├── core/ # Shared project components
+<pre class="language-dart"><code>├── core/ # Shared project components
 │ ├── errors/ # Custom error classes
-│ │ └── failure.dart # Failure type definitions
+│ │    └── failure.dart # Failure type definitions
 │ └── use_cases/ # Base use case classes
-│ └── use_case.dart # Abstract UseCase template
+│      └── use_case.dart # Abstract UseCase template
 │
 └── features/ # Feature modules
-└── &lt;feature_name&gt;/ # Generated feature name
-├── Data/
-│ ├── DataSources/ # API/Remote data sources
-│ ├── Models/ # Data model classes
-│ └── Repo/ # Repository implementations
-│
-├── Domain/
-│ ├── Repositories/ # Abstract repository contracts
-│ └── UseCases/ # Business logic components
-│
-└── Presentation/
-├── Controller/ # BLoC/Cubit + State classes
-└── Views/
-├── Screens/ # Full page views
-└── Widgets/ # Reusable components
+    └── &lt;feature_name&gt;/ # Generated feature name
+        ├── data/
+        │ ├── data_sources/ # API/Remote data sources
+        │ ├── models/ # Data model classes
+        │ └── repo/ # Repository implementations
+        │
+        ├── domain/
+        │ ├── repositories/ # Abstract repository contracts
+        │ └── use_cases/ # Business logic components
+        │
+        └── presentation/
+          ├── controller/ # BLoC/Cubit + State classes
+          └── views/
+              ├── screens/ # Full page views
+              └── widgets/ # Reusable components
 </code></pre>
+<p>The <code>lib/</code> directory is divided into two main sections: shared utilities (<code>core/</code>) and feature-specific modules (<code>features/</code>). Below is a breakdown of the structure in a tabular format:</p>
+<table>
+<thead>
+<tr>
+<th>Directory Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>core/errors/failure.dart</code></td>
+<td>Defines custom error types for the app.</td>
+</tr>
+<tr>
+<td><code>core/use_cases/use_case.dart</code></td>
+<td>Abstract template for use case classes.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/data/data_sources/</code></td>
+<td>Handles API or remote data interactions.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/data/models/</code></td>
+<td>Contains data model classes for serialization.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/data/repo/</code></td>
+<td>Implements data repository logic.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/domain/repositories/</code></td>
+<td>Defines abstract repository interfaces.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/domain/use_cases/</code></td>
+<td>Encapsulates business logic for the feature.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/presentation/controller/</code></td>
+<td>Manages state using BLoC or Cubit.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/presentation/views/screens/</code></td>
+<td>Full-page UI views for the feature.</td>
+</tr>
+<tr>
+<td><code>features/&lt;feature_name&gt;/presentation/views/widgets/</code></td>
+<td>Reusable UI components.</td>
+</tr>
+</tbody>
+</table>
 <p>Key additions:</p>
 <ol>
 <li>Core directory structure shown at project root level</li>
