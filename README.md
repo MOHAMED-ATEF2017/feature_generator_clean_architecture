@@ -20,12 +20,13 @@ A command-line interface (CLI) tool that accelerates Flutter development by gene
 # Installation 💻
 
 Install globally using Dart:
-### 1. If you use it from [pub.dev](https://pub.dev/packages/feature_generator)
+### 1. Downloaded it from [pub.dev](https://pub.dev/packages/feature_generator)
+then run this code at terminal:
 
 ```bash
     dart pub global activate feature_generator
  ```
-For Bash/Zsh
+ For Bash/Zsh
 
  ```bash
     export PATH="$PATH:$HOME/.pub-cache/bin"
@@ -34,81 +35,65 @@ For PowerShell
 ```bash
     $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
 ```
-
-### 2. If you use it from [GitHub](https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture)
-
-  Add this lines to yaml
-```yaml
-dependencies:
-  feature_generator:
-    git:
-      url: https://github.com/MOHAMED-ATEF2017/feature_generator_clean_architecture.git
-      path: feature_generator/  # Path to package within repo
-      ref: master               # Optional: branch/tag/commit
-```
-  Or run this at terminal 
-```bash
-dart pub global activate --source git https://github.com/MOHAMED-ATEF2017/feature_generator.git
-```
-
 # Usage 🚀
 Generate a feature structure with optional automatic dependency installation:
-```bash
-    feature_generator create --name <FEATURE_NAME>
-```
-OR
-```bash
-    feature_generator create --name <FEATURE_NAME> [--install-deps]
-```
+
+At first , run :
+  feature_generator create --name <FEATURE_NAME> [--install-deps]
+Then:
+  feature_generator create --name <FEATURE_NAME>
+
 ## Example:
 
+Core folders (`lib/core/`) are only created when using the `--install-deps` flag:
+* First run With full automatic installation for installing the used packages
 ```bash
-# Without automatic installation
-feature_generator create --name Auth
-
-# With full automatic installation
 feature_generator create --name Auth --install-deps
 ```
-<!-- ## This creates:
-```
-lib/features/user_profile/
-├── Data/
-├── Domain/
-└── Presentation/
-``` -->
-# Feature Generator Example
-
-Generate sample features:
-```bash
-dart example/example_usage.dart
+* After that use 
+``` bash
+feature_generator create --name Auth
 ```
 
 # Generated Structure 🌳
 ```
-lib/
 ├── core/ # Shared project components
 │ ├── errors/ # Custom error classes
-│ │ └── failure.dart # Failure type definitions
+│ │    └── failure.dart # Failure type definitions
 │ └── use_cases/ # Base use case classes
-│ └── use_case.dart # Abstract UseCase template
+│      └── use_case.dart # Abstract UseCase template
 │
 └── features/ # Feature modules
-└── <feature_name>/ # Generated feature name
-├── Data/
-│ ├── DataSources/ # API/Remote data sources
-│ ├── Models/ # Data model classes
-│ └── Repo/ # Repository implementations
-│
-├── Domain/
-│ ├── Repositories/ # Abstract repository contracts
-│ └── UseCases/ # Business logic components
-│
-└── Presentation/
-├── Controller/ # BLoC/Cubit + State classes
-└── Views/
-├── Screens/ # Full page views
-└── Widgets/ # Reusable components
-```
+    └── <feature_name>/ # Generated feature name
+        ├── data/
+        │ ├── data_sources/ # API/Remote data sources
+        │ ├── models/ # Data model classes
+        │ └── repo/ # Repository implementations
+        │
+        ├── domain/
+        │ ├── repositories/ # Abstract repository contracts
+        │ └── use_cases/ # Business logic components
+        │
+        └── presentation/
+          ├── controller/ # BLoC/Cubit + State classes
+          └── views/
+              ├── screens/ # Full page views
+              └── widgets/ # Reusable components
+ ```        
+The `lib/` directory is divided into two main sections: shared utilities (`core/`) and feature-specific modules (`features/`). Below is a breakdown of the structure in a tabular format:
+
+| Directory Path                     | Purpose                                      |
+|------------------------------------|----------------------------------------------|
+| `core/errors/failure.dart`         | Defines custom error types for the app.      |
+| `core/use_cases/use_case.dart`     | Abstract template for use case classes.      |
+| `features/<feature_name>/data/data_sources/` | Handles API or remote data interactions.     |
+| `features/<feature_name>/data/models/`      | Contains data model classes for serialization. |
+| `features/<feature_name>/data/repo/`        | Implements data repository logic.            |
+| `features/<feature_name>/domain/repositories/` | Defines abstract repository interfaces.      |
+| `features/<feature_name>/domain/use_cases/`     | Encapsulates business logic for the feature. |
+| `features/<feature_name>/presentation/controller/` | Manages state using BLoC or Cubit.          |
+| `features/<feature_name>/presentation/views/screens/` | Full-page UI views for the feature.         |
+| `features/<feature_name>/presentation/views/widgets/` | Reusable UI components.
 
 
 Key additions:

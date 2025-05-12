@@ -19,8 +19,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '/Core/Errors/failure.dart';
-import '/Core/Extensions/toast.dart';
+import '/core/errors/failure.dart';
 
 part '${name.toLowerCase()}_state.dart';
 
@@ -36,7 +35,7 @@ class ${name.capitalize()}Cubit extends Cubit<${name.capitalize()}State> {
     Either<Failure, ${name.capitalize()}Model> result = await fetch${name.capitalize()}UseCase.call();
     result.fold(
       (l) {
-        ctx.customToast(l.message);
+        //TODO : write the code which will woek at failed case
         emit(${name.capitalize()}StateFailed(message: l.message));
       },
       (request) {
@@ -71,9 +70,10 @@ void writeInitialCode(File file, String fileName, String name) {
     initialCode = '''
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import '/core/api_helper/api_endpoints.dart';
-import '/core/api_helper/api_headers.dart';
-import '/core/api_helper/api_helper.dart';
+//TODO: Importing the write endpoints
+// import '/core/api_helper/api_endpoints.dart';
+// import '/core/api_helper/api_headers.dart';
+// import '/core/api_helper/api_helper.dart';
 
 abstract class ${fileName.split('_').first.capitalize()}RemoteDataSource {
   Future<${fileName.split('_').first.capitalize()}Model> get${fileName.split('_').first.capitalize()}();
@@ -102,7 +102,7 @@ class ${fileName.split('_').first.capitalize()}RemoteDataSourceImplementation ex
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import '/Core/Errors/failure.dart';
+import '/core/errors/failure.dart';
 
 @Singleton(as: ${fileName.split('_').first.capitalize()}Repository)
 class ${fileName.split('_').first.capitalize()}RepoImpl extends ${fileName.split('_').first.capitalize()}Repository {
@@ -128,7 +128,7 @@ class ${fileName.split('_').first.capitalize()}RepoImpl extends ${fileName.split
   } else if (file.path.contains('domain/repositories')) {
     initialCode = '''
 import 'package:dartz/dartz.dart';
-import '/Core/Errors/failure.dart';
+import '/core/errors/failure.dart';
 
 abstract class ${fileName.split('_').first.capitalize()}Repository {
   Future<Either<Failure, ${fileName.split('_').first.capitalize()}Model>> get${fileName.split('_').first.capitalize()}();
@@ -138,8 +138,8 @@ abstract class ${fileName.split('_').first.capitalize()}Repository {
     initialCode = '''
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import '/Core/Errors/failure.dart';
-import '/Core/UseCase/use_case.dart';
+import '/core/errors/failure.dart';
+import '/core/useCase/use_case.dart';
 
 @lazySingleton
 class Fetch${fileName.split('_').first.capitalize()}UseCase extends UseCases<${fileName.split('_').first.capitalize()}Model> {

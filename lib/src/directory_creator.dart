@@ -64,11 +64,21 @@ void createCoreFiles() {
     if (!directory.existsSync()) {
       directory.createSync(recursive: true);
       print('Created core directory: $dir ✓');
+
+       // Create default files
+      if (dir.contains('errors')) {
+        _createFailureFile(directory);
+      } else if (dir.contains('use_cases')) {
+        _createUseCaseFile(directory);
+      }
     }
   }
+}
 
   // Create failure.dart
-  final failureFile = File('lib/core/errors/failure.dart');
+
+  void _createFailureFile (Directory dir){
+  final failureFile = File('${dir.path}/failure.dart');
   if (!failureFile.existsSync()) {
     failureFile.createSync(recursive: true);
     writeCoreFailureCode(failureFile);
@@ -77,8 +87,12 @@ void createCoreFiles() {
     print('Core file already exists: ${failureFile.path}');
   }
 
-  // Create use_case.dart
-  final useCaseFile = File('lib/core/use_cases/use_case.dart');
+  }
+
+// Create use_case.dart
+
+void _createUseCaseFile (Directory dir){
+  final useCaseFile = File('${dir.path}/use_case.dart');
   if (!useCaseFile.existsSync()) {
     useCaseFile.createSync(recursive: true);
     writeCoreUseCaseCode(useCaseFile);
@@ -88,6 +102,8 @@ void createCoreFiles() {
   }
 }
 
+
+
 /// Creates a feature structure with the specified name and optional dependencies.
 void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   if (featureName.isEmpty) {
@@ -96,7 +112,7 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   }
 
   // Create core directories and files first
-  createCoreFiles();
+  if(installDeps) createCoreFiles();
 
   // Get the feature name from command line arguments
   final name = featureName;
