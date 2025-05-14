@@ -1,56 +1,77 @@
-name: Dart CI
+name: Deploy Documentation
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main]
   pull_request:
-    branches: [ main, master ]
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        sdk: [stable]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Dart
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: ${{ matrix.sdk }}
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-            channel: stable
-
-      - name: Pub get
-        run: flutter pub get
-      - name: Install dependencies
-        run: dart pub get
-
-      - name: Check formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Analyze code
-        run: dart analyze .
-
-      - name: Run tests
-        run: dart test 
-
-      - name: Validate documentation
-        run: dartdoc --validate-links --errors all --warnings all
-
-  publish:
-    needs: test
-    if: github.event_name == 'push' && contains(github.ref, 'tags')
+  deploy-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-      - run: dart pub publish --dry-run
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+      - uses: actions/setup-dart@v1
+      - run: flutter pub get
+      - run: flutter pub global run dartdoc
+      - uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doc/api
+
+# name: Dart CI
+
+# on:
+#   push:
+#     branches: [ main, master ]
+#   pull_request:
+#     branches: [ main, master ]
+
+# jobs:
+#   test:
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest, windows-latest, macos-latest]
+#         sdk: [stable]
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Install Dart
+#         uses: dart-lang/setup-dart@v1
+#         with:
+#           sdk: ${{ matrix.sdk }}
+#       - name: Install Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#             channel: stable
+
+#       - name: Pub get
+#         run: flutter pub get
+#       - name: Install dependencies
+#         run: dart pub get
+
+#       - name: Check formatting
+#         run: dart format --output=none --set-exit-if-changed .
+
+#       - name: Analyze code
+#         run: dart analyze .
+
+#       - name: Run tests
+#         run: dart test 
+
+#       - name: Validate documentation
+#         run: dartdoc --validate-links --errors all --warnings all
+
+#   publish:
+#     needs: test
+#     if: github.event_name == 'push' && contains(github.ref, 'tags')
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: dart-lang/setup-dart@v1
+#       - run: dart pub publish --dry-run
+#         env:
+#           PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}

@@ -14,7 +14,7 @@ import 'package:feature_generator/src/code_writers.dart';
 /// ```
 
 // Function to create specific controller files
-void createControllerFiles(String name) {
+void _createControllerFiles(String name) {
   final controllerPath =
       '${Directory.current.path}/lib/features/$name/presentation/controller';
 
@@ -52,7 +52,7 @@ void createControllerFiles(String name) {
 /// createCoreFiles();
 /// ```
 
-void createCoreFiles() {
+void _createCoreFiles() {
   final coreDirectories = [
     'lib/core/errors',
     'lib/core/use_cases',
@@ -104,7 +104,23 @@ void _createUseCaseFile (Directory dir){
 
 
 
-/// Creates a feature structure with the specified name and optional dependencies.
+
+/// Generates Clean Architecture folder structure for a feature
+/// 
+/// {@template feature_generator}
+/// Creates the following structure:
+/// 
+/// ```dart
+/// lib/features/<feature_name>/
+///   ├── data/
+///   ├── domain/
+///   └── presentation/
+/// ```
+/// {@endtemplate}
+/// 
+/// {@param featureName} The name of the feature to generate
+/// {@param installDeps} Whether to install dependencies (default: false)
+
 void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   if (featureName.isEmpty) {
     print('Please provide a feature name as an argument.');
@@ -112,7 +128,7 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   }
 
   // Create core directories and files first
-  if(installDeps) createCoreFiles();
+  if(installDeps) _createCoreFiles();
 
   // Get the feature name from command line arguments
   final name = featureName;
@@ -158,7 +174,7 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
     }
   }
 // Call the function to create controller files
-  createControllerFiles(name);
+  _createControllerFiles(name);
 
   print('Creating folders and files successfully ✓');
   print('Creating files successfully ✓');
@@ -211,13 +227,12 @@ Installation guide: https://flutter.dev/docs/get-started/install
       return;
     }
 
-    print('📦 Adding dependencies...');
-    _runCommand(flutterExecutable, ['pub', 'add', 'flutter_bloc', 'injectable', 'dartz', 'dio']);
-    _runCommand(flutterExecutable, ['pub', 'add', '--dev', 'build_runner', 'injectable_generator', 'intl_utils', 'flutter_gen_runner', 'flutter_lints']);
+    print('📦 Installing dependencies...');
+_runCommand(flutterExecutable, ['pub', 'add', 'get_it', 'injectable', 'flutter_bloc', 'dartz', 'dio']);
+    _runCommand(flutterExecutable, ['pub', 'add', '--dev', 'build_runner', 'injectable_generator']);
 
     print('🚀 Running build_runner...');
     _runCommand(flutterExecutable, ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs']);
-
   } catch (e) {
     print('''
 ⚠️ Error during post-installation:
@@ -226,9 +241,26 @@ $e
 💡 Troubleshooting steps:
 1. Ensure Flutter is installed and in your PATH
 2. Run manually:
-   - flutter pub add flutter_bloc injectable dartz dio
+   - flutter pub add flutter_bloc injectable dartz dio get_it
    - flutter pub add --dev build_runner injectable_generator
    - flutter pub run build_runner build
 ''');
+  }
+}
+// Add this new function
+void installDependencies({bool createCore = true}) {
+  if (createCore) {
+    _createCoreFiles();
+    _createServiceLocator();
+  }
+  _runPostInstallation();
+}
+
+// Add service locator creation
+void _createServiceLocator() {
+  final file = File('lib/core/utils/service_locator.dart');
+  if (!file.existsSync()) {
+    writeServiceLocatorCode(file);
+    print('Created service locator: ${file.path} ✓');
   }
 }

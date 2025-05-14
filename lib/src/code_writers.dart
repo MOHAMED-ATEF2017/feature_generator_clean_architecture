@@ -1,13 +1,13 @@
-// Copyright (c) 2025 MOHAMED ATEF. 
+// Copyright (c) 2025 MOHAMED ATEF.
 // Licensed under the BSD License.
 /// {@category Code Generation}
-
 
 import 'dart:io';
 
 import 'package:feature_generator/src/extensions.dart';
+
 /// Writes Cubit boilerplate code to a file
-/// 
+///
 /// ```dart
 /// writeCubitCode(file, 'Auth');
 /// ```
@@ -56,7 +56,7 @@ class ${name.capitalize()}Cubit extends Cubit<${name.capitalize()}State> {
 }
 
 /// Writes initial boilerplate code to a file
-/// 
+///
 /// ```dart
 /// writeInitialCode(File file, String fileName, String name);
 /// ```
@@ -188,7 +188,7 @@ class ${fileName.split('_').first.capitalize()}Widget extends StatelessWidget {
 }
 
 /// Writes BLoc states code to a file
-/// 
+///
 /// ```dart
 /// writeStateCode(file, 'Auth');
 /// ```
@@ -220,7 +220,7 @@ final class ${name.capitalize()}StateFailed extends ${name.capitalize()}State {
 }
 
 /// Writes Core Failure code to a file
-/// 
+///
 /// ```dart
 /// writeCoreFailureCode(file);
 /// ```
@@ -276,18 +276,17 @@ class ServerFailure extends Failure {
   }
 }
 ''');
- 
 }
 
 /// Writes Core Use Case code to a file
-/// 
+///
 /// ```dart
 /// writeCoreUseCaseCode(file, 'Auth');
 /// ```
 
 //*________________ Function to write initial code to failure file __________________*//
 void writeCoreUseCaseCode(File useCaseFile) {
- useCaseFile.writeAsStringSync('''
+  useCaseFile.writeAsStringSync('''
 import 'package:dartz/dartz.dart';
 import '../Errors/failure.dart';
 
@@ -298,4 +297,28 @@ abstract class UseCases<Type> {
 abstract class UseCasesWithParamater<Type, Parameter> {
   Future<Either<Failure, Type>> call(Parameter parameter);
 }
-''');}
+''');
+}
+
+/// Writes Core utilization Helper code to a file
+///
+/// ```dart
+/// writeServiceLocatorCode(File file);
+/// ```
+//*________________ Function to write initial code to service locator file __________________*//
+void writeServiceLocatorCode(File file) {
+  file.writeAsStringSync('''
+import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
+// run the command: flutter pub run build_runner build 
+// to generate the service locator
+// and the injectable config file
+import 'service_locator.config.dart';
+final getIt = GetIt.instance;
+
+@InjectableInit()
+
+// call this function in main.dart
+void configureDependencies() => getIt.init();
+''');
+}

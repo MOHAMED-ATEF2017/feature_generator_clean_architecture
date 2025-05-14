@@ -20,48 +20,56 @@ A command-line interface (CLI) tool that accelerates Flutter development by gene
 # Installation 💻
 
 Install globally using Dart:
-### 1. Downloaded it from [pub.dev](https://pub.dev/packages/feature_generator)
+### 1. From pub.dev [pub.dev](https://pub.dev/packages/feature_generator)
 then run this code at terminal:
 
 ```bash
     dart pub global activate feature_generator
  ```
- For Bash/Zsh
-
+ Add to PATH:
  ```bash
+ # For Bash/Zsh
     export PATH="$PATH:$HOME/.pub-cache/bin"
-```
-For PowerShell
-```bash
+
+# For PowerShell
     $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
 ```
 # Usage 🚀
-Generate a feature structure with optional automatic dependency installation:
+## 1. Initialize Project
 
-At first , run :
-  feature_generator create --name <FEATURE_NAME> [--install-deps]
-Then:
-  feature_generator create --name <FEATURE_NAME>
+At first , run this command to install dependacies and core folder:
+``` bash
+feature_generator install
+```
+This creates:
+
+Core directories (`lib/core/errors`, `lib/core/use_cases`)
+
+Service locator (`lib/core/utils/service_locator.dart`)
+
+Installs required dependencies
+
+## 2. Generate Features
+``` bash
+feature_generator create --name <FEATURE_NAME>
+```
 
 ## Example:
 
-Core folders (`lib/core/`) are only created when using the `--install-deps` flag:
-* First run With full automatic installation for installing the used packages
-```bash
-feature_generator create --name Auth --install-deps
-```
-* After that use 
+For create `Auth` feature 
 ``` bash
 feature_generator create --name Auth
 ```
-
+The core folders (`lib/core/errors` and `lib/core/use_cases`) will only exist after running the `install` command, never during feature creation.
 # Generated Structure 🌳
 ```
 ├── core/ # Shared project components
 │ ├── errors/ # Custom error classes
 │ │    └── failure.dart # Failure type definitions
-│ └── use_cases/ # Base use case classes
-│      └── use_case.dart # Abstract UseCase template
+│ ├── use_cases/ # Base use case classes
+│ │    └── use_case.dart # Abstract UseCase template
+│ └── utils/ # Create getit initialize
+│      └── use_case.dart # Get it Definition
 │
 └── features/ # Feature modules
     └── <feature_name>/ # Generated feature name
@@ -103,8 +111,6 @@ Key additions:
 
 The core directory will be generated once during the first feature creation. Subsequent features will reuse these core components.
 
-**Example Core Files** section added:
-markdown
 ## Core Components 🔨
 
 ### Failure Class (`lib/core/errors/failure.dart`)
@@ -121,7 +127,7 @@ class ServerFailure extends Failure {
 ```
 # Example Code 🧑💻
 
-## 1. Cubit File (user_profile_cubit.dart):
+## 1. Cubit File (`lib/feature/auth/presentation/controller/user_profile_cubit.dart`):
 ```dart
 @injectable
 class UserProfileCubit extends Cubit<UserProfileState> {
@@ -136,13 +142,13 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   }
 
 ```
-## 2. Repository Contract (user_profile_repository.dart):
+## 2. Repository Contract (`user_profile_repository.dart`):
 ```dart
 abstract class UserProfileRepository {
   Future<Either<Failure, UserProfileModel>> getProfile();
 }
 ```
-## 3. UseCase Template (lib/core/use_cases/use_case.dart):
+## 3. UseCase Template (`lib/core/use_cases/use_case.dart`):
 ```dart
 import 'package:dartz/dartz.dart';
 import '../Errors/failure.dart';
@@ -155,7 +161,17 @@ abstract class UseCasesWithParamater<Type, Parameter> {
   Future<Either<Failure, Type>> call(Parameter parameter);
 }
 ```
-## 4. Failure (lib/core/errors/failure.dart) :
+## 4. Service Locator (`lib/core/util/service_locator.dart`)
+```dart
+import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
+
+final getIt = GetIt.instance;
+
+@InjectableInit()
+void configureDependencies() => getIt.init();
+```
+## 5. Failure (`lib/core/errors/failure.dart`) :
 ```dart
 import 'package:dio/dio.dart';
 
@@ -205,7 +221,7 @@ class ServerFailure extends Failure {
   }
 }
 ```
-## 5. Data Source (featurs/*FeatureName*/data/data_sources/*featurename*_data_source.dart):
+## 6. Data Source (`lib/featurs/*FeatureName*/data/data_sources/*featurename*_data_source.dart `):
 ```dart
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -233,7 +249,7 @@ class FeatureNameRemoteDataSourceImplementation extends FeatureNameRemoteDataSou
   }
 }
 ```
-## 6. Data RepoRepository (featurs/*FeatureName*/data/repo/*featurename*_repo.dart):
+## 7. Data RepoRepository (`lib/featurs/*FeatureName*/data/repo/*featurename*_repo.dart`):
 ```dart
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -261,7 +277,7 @@ class FEATURENAMERepoImpl extends FEATURENAMERepository {
   }
 }
 ```
-## 7. Domain Repository (featurs/*FeatureName*/domain/repositories/*featurename*_repository.dart):
+## 8. Domain Repository (`lib/featurs/*FeatureName*/domain/repositories/*featurename*_repository.dart`):
 ```dart
 import 'package:dartz/dartz.dart';
 import '/Core/Errors/failure.dart';
@@ -270,7 +286,7 @@ abstract class FEATURENAMERepository {
   Future<Either<Failure, FEATURENAMEModel>> getFEATURENAME();
 }
 ```
-## 7. Domain UseCases (featurs/*FeatureName*/domain/use_cases/*featurename*_use_case_.dart):
+## 9. Domain UseCases (`lib/featurs/*FeatureName*/domain/use_cases/*featurename*_use_case_.dart`):
 ```dart
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
@@ -297,6 +313,7 @@ dependencies:
   injectable: 
   dartz: 
   dio: 
+  get_it:
 
 dev_dependencies:
   build_runner: 
@@ -347,4 +364,4 @@ flutter pub get
 5. Open a Pull Request
 
 # License 📄
-This project is licensed under the MIT License - see the [LICENSE](https://pub.dev/packages/feature_generator/license) file for details.
+This project is licensed under the BSD_3 License - see the [LICENSE](https://pub.dev/packages/feature_generator/license) file for details.

@@ -67,7 +67,15 @@
     </section>
     
 <section class="desc markdown">
-  <p>Creates a feature structure with the specified name and optional dependencies.</p>
+  <p>Generates Clean Architecture folder structure for a feature</p>
+<p>Creates the following structure:</p>
+<pre class="language-dart"><code class="language-dart">lib/features/&lt;feature_name&gt;/
+  ├── data/
+  ├── domain/
+  └── presentation/
+</code></pre>
+<p>{@param featureName} The name of the feature to generate
+{@param installDeps} Whether to install dependencies (default: false)</p>
 </section>
 
 
@@ -81,7 +89,7 @@
   }
 
   &#47;&#47; Create core directories and files first
-  if(installDeps) createCoreFiles();
+  if(installDeps) _createCoreFiles();
 
   &#47;&#47; Get the feature name from command line arguments
   final name = featureName;
@@ -127,7 +135,7 @@
     }
   }
 &#47;&#47; Call the function to create controller files
-  createControllerFiles(name);
+  _createControllerFiles(name);
 
   print(&#39;Creating folders and files successfully ✓&#39;);
   print(&#39;Creating files successfully ✓&#39;);
@@ -162,7 +170,7 @@
 <footer>
   <span class="no-break">
     feature_generator
-      1.0.5
+      2.0.0
   </span>
   
 </footer>

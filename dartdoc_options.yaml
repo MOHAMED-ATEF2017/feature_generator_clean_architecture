@@ -1,4 +1,7 @@
 dartdoc:
+  sdk: stable
+  sdk-dir: /home/mohamedatef/development/flutter/bin/cache/dart-sdk
+  validate-links: true
   categories:
     "Main":
       name: "Main Components"
