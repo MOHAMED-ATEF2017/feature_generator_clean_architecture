@@ -118,8 +118,6 @@ void _createUseCaseFile (Directory dir){
 /// ```
 /// {@endtemplate}
 /// 
-/// {@param featureName} The name of the feature to generate
-/// {@param installDeps} Whether to install dependencies (default: false)
 
 void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   if (featureName.isEmpty) {
