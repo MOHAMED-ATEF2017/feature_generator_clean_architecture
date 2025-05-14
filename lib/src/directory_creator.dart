@@ -1,4 +1,4 @@
-// Copyright (c) 2025 MOHAMED ATEF. 
+// Copyright (c) 2025 MOHAMED ATEF.
 // Licensed under the MIT License.
 
 // ignore_for_file: avoid_print
@@ -8,7 +8,7 @@ import 'dart:io';
 import 'package:feature_generator/src/code_writers.dart';
 
 /// Writes featue files and directories to the specified path.
-/// 
+///
 /// ```dart
 /// createControllerFiles('Auth');
 /// ```
@@ -42,12 +42,11 @@ void _createControllerFiles(String name) {
     writeStateCode(stateFile, name);
   } else {
     print('File already exists: $stateFilePath');
-  }  
+  }
 }
 
-
 /// Writes core files and directories to the specified path.
-/// 
+///
 /// ```dart
 /// createCoreFiles();
 /// ```
@@ -65,7 +64,7 @@ void _createCoreFiles() {
       directory.createSync(recursive: true);
       print('Created core directory: $dir ✓');
 
-       // Create default files
+      // Create default files
       if (dir.contains('errors')) {
         _createFailureFile(directory);
       } else if (dir.contains('use_cases')) {
@@ -75,9 +74,9 @@ void _createCoreFiles() {
   }
 }
 
-  // Create failure.dart
+// Create failure.dart
 
-  void _createFailureFile (Directory dir){
+void _createFailureFile(Directory dir) {
   final failureFile = File('${dir.path}/failure.dart');
   if (!failureFile.existsSync()) {
     failureFile.createSync(recursive: true);
@@ -86,12 +85,11 @@ void _createCoreFiles() {
   } else {
     print('Core file already exists: ${failureFile.path}');
   }
-
-  }
+}
 
 // Create use_case.dart
 
-void _createUseCaseFile (Directory dir){
+void _createUseCaseFile(Directory dir) {
   final useCaseFile = File('${dir.path}/use_case.dart');
   if (!useCaseFile.existsSync()) {
     useCaseFile.createSync(recursive: true);
@@ -102,14 +100,11 @@ void _createUseCaseFile (Directory dir){
   }
 }
 
-
-
-
 /// Generates Clean Architecture folder structure for a feature
-/// 
+///
 /// {@template feature_generator}
 /// Creates the following structure:
-/// 
+///
 /// ```dart
 /// lib/features/<feature_name>/
 ///   ├── data/
@@ -117,16 +112,16 @@ void _createUseCaseFile (Directory dir){
 ///   └── presentation/
 /// ```
 /// {@endtemplate}
-/// 
+///
 
-void createFeatureStructure(String featureName ,{bool installDeps = false}) {
+void createFeatureStructure(String featureName, {bool installDeps = false}) {
   if (featureName.isEmpty) {
     print('Please provide a feature name as an argument.');
     return;
   }
 
   // Create core directories and files first
-  if(installDeps) _createCoreFiles();
+  if (installDeps) _createCoreFiles();
 
   // Get the feature name from command line arguments
   final name = featureName;
@@ -177,11 +172,10 @@ void createFeatureStructure(String featureName ,{bool installDeps = false}) {
   print('Creating folders and files successfully ✓');
   print('Creating files successfully ✓');
 
-    if (installDeps) {
+  if (installDeps) {
     _runPostInstallation();
   }
 }
-
 
 /// Writes initial code to the specified file.
 void _runCommand(String command, List<String> args) {
@@ -226,11 +220,19 @@ Installation guide: https://flutter.dev/docs/get-started/install
     }
 
     print('📦 Installing dependencies...');
-_runCommand(flutterExecutable, ['pub', 'add', 'get_it', 'injectable', 'flutter_bloc', 'dartz', 'dio']);
-    _runCommand(flutterExecutable, ['pub', 'add', '--dev', 'build_runner', 'injectable_generator']);
+    _runCommand(flutterExecutable,
+        ['pub', 'add', 'get_it', 'injectable', 'flutter_bloc', 'dartz', 'dio']);
+    _runCommand(flutterExecutable,
+        ['pub', 'add', '--dev', 'build_runner', 'injectable_generator']);
 
     print('🚀 Running build_runner...');
-    _runCommand(flutterExecutable, ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs']);
+    _runCommand(flutterExecutable, [
+      'pub',
+      'run',
+      'build_runner',
+      'build',
+      '--delete-conflicting-outputs'
+    ]);
   } catch (e) {
     print('''
 ⚠️ Error during post-installation:
@@ -245,6 +247,7 @@ $e
 ''');
   }
 }
+
 // Add this new function
 void installDependencies({bool createCore = true}) {
   if (createCore) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 MOHAMED ATEF. 
+// Copyright (c) 2025 MOHAMED ATEF.
 // Licensed under the MIT License.
 
 extension StringCapitalization on String {

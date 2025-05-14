@@ -1,5 +1,5 @@
 /// A CLI tool for generating Clean Architecture feature structures
-/// 
+///
 /// {@category Main}
 library feature_generator;
 
