@@ -1,6 +1,7 @@
 // Copyright (c) 2025 MOHAMED ATEF.
 // Licensed under the BSD License.
 /// {@category Code Generation}
+library code_writers;
 
 import 'dart:io';
 

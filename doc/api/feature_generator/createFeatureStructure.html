@@ -74,22 +74,20 @@
   ├── domain/
   └── presentation/
 </code></pre>
-<p>{@param featureName} The name of the feature to generate
-{@param installDeps} Whether to install dependencies (default: false)</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">void createFeatureStructure(String featureName ,{bool installDeps = false}) {
+  <pre class="language-dart"><code class="language-dart">void createFeatureStructure(String featureName, {bool installDeps = false}) {
   if (featureName.isEmpty) {
     print(&#39;Please provide a feature name as an argument.&#39;);
     return;
   }
 
   &#47;&#47; Create core directories and files first
-  if(installDeps) _createCoreFiles();
+  if (installDeps) _createCoreFiles();
 
   &#47;&#47; Get the feature name from command line arguments
   final name = featureName;
@@ -140,7 +138,7 @@
   print(&#39;Creating folders and files successfully ✓&#39;);
   print(&#39;Creating files successfully ✓&#39;);
 
-    if (installDeps) {
+  if (installDeps) {
     _runPostInstallation();
   }
 }</code></pre>
