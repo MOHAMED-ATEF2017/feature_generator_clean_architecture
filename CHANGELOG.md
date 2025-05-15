@@ -1,4 +1,7 @@
 # Changelog
+## [2.1.0] - 2025-05-15
+- Added automatic PATH configuration post-install
+- Support for Bash/Zsh/Fish shells
 
 ## [2.0.1] - 2025-05-15
 

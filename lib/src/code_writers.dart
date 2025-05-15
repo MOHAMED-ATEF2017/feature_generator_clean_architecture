@@ -289,7 +289,7 @@ class ServerFailure extends Failure {
 void writeCoreUseCaseCode(File useCaseFile) {
   useCaseFile.writeAsStringSync('''
 import 'package:dartz/dartz.dart';
-import '../Errors/failure.dart';
+import '../errors/failure.dart';
 
 abstract class UseCases<Type> {
   Future<Either<Failure, Type>> call();

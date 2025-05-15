@@ -21,19 +21,29 @@ A command-line interface (CLI) tool that accelerates Flutter development by gene
 
 Install globally using Dart:
 ### 1. From pub.dev [pub.dev](https://pub.dev/packages/feature_generator)
-then run this code at terminal:
+Import the package:
+``` bash
+flutter pub get feature_generator
+```
+Then, to add the package to PATH
 
 ```bash
-    dart pub global activate feature_generator
+ dart pub global activate feature_generator && dart pub global run feature_generator:_post_install
  ```
- Add to PATH:
+ <!-- Add to PATH:
  ```bash
  # For Bash/Zsh
     export PATH="$PATH:$HOME/.pub-cache/bin"
 
 # For PowerShell
-    $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
-```
+    $env:Path += ";$env:USERPROFILE\.pub-cache\bin" -->
+<!-- ``` -->
+### Key Features:
+#### 1- Automatic Shell Detection
+Supports Bash, Zsh, and Fish.
+
+#### 2- Permanent PATH Configuration
+Appends to the appropriate shell config file.
 # Usage 🚀
 ## 1. Initialize Project
 
