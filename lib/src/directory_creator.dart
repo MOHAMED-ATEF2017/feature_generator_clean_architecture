@@ -55,6 +55,7 @@ void _createCoreFiles() {
   final coreDirectories = [
     'lib/core/errors',
     'lib/core/use_cases',
+     'lib/core/utils',
   ];
 
   // Create core directories
@@ -71,7 +72,9 @@ void _createCoreFiles() {
         _createUseCaseFile(directory);
       }
     }
+
   }
+  _createServiceLocator();
 }
 
 // Create failure.dart
@@ -259,7 +262,12 @@ void installDependencies({bool createCore = true}) {
 
 // Add service locator creation
 void _createServiceLocator() {
-  final file = File('lib/core/utils/service_locator.dart');
+
+   final utilsDir = Directory('lib/core/utils');
+  if (!utilsDir.existsSync()) {
+    utilsDir.createSync(recursive: true);
+  }
+  final file = File('${utilsDir.path}/service_locator.dart');
   if (!file.existsSync()) {
     writeServiceLocatorCode(file);
     print('Created service locator: ${file.path} ✓');

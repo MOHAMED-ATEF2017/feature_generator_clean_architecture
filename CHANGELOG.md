@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.1] - 2025-05-15
+
+### Fixed
+- Added missing `utils` directory creation during installation
+- Fixed service locator file generation path error
+- Improved core folder structure initialization reliability
+
+### Changed
+- Core folder structure now includes:
+
+
+
 ## [2.0.0] - 2025-05-14
 
 ### Breaking Changes
