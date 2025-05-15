@@ -66,16 +66,25 @@
 <h1 id="installation-">Installation 💻</h1>
 <p>Install globally using Dart:</p>
 <h3 id="1-from-pubdev-pubdevhttpspubdevpackagesfeature_generator">1. From pub.dev <a href="https://pub.dev/packages/feature_generator">pub.dev</a></h3>
-<p>then run this code at terminal:</p>
-<pre class="language-bash"><code class="language-bash">    dart pub global activate feature_generator
+<p>Import the package:</p>
+<pre class="language-bash"><code class="language-bash">flutter pub get feature_generator
 </code></pre>
-<p>Add to PATH:</p>
-<pre class="language-bash"><code class="language-bash"># For Bash/Zsh
-   export PATH="$PATH:$HOME/.pub-cache/bin"
+<p>Then, to add the package to PATH</p>
+<pre class="language-bash"><code class="language-bash"> dart pub global activate feature_generator &amp;&amp; dart pub global run feature_generator:_post_install
+</code></pre>
+ <!-- Add to PATH:
+ ```bash
+ # For Bash/Zsh
+    export PATH="$PATH:$HOME/.pub-cache/bin"
 
 # For PowerShell
-   $env:Path += ";$env:USERPROFILE\.pub-cache\bin"
-</code></pre>
+    $env:Path += ";$env:USERPROFILE\.pub-cache\bin" -->
+<!-- ``` -->
+<h3 id="key-features">Key Features:</h3>
+<h4 id="1--automatic-shell-detection">1- Automatic Shell Detection</h4>
+<p>Supports Bash, Zsh, and Fish.</p>
+<h4 id="2--permanent-path-configuration">2- Permanent PATH Configuration</h4>
+<p>Appends to the appropriate shell config file.</p>
 <h1 id="usage-">Usage 🚀</h1>
 <h2 id="1-initialize-project">1. Initialize Project</h2>
 <p>At first , run this command to install dependacies and core folder:</p>
@@ -460,7 +469,7 @@ flutter pub get
 <footer>
   <span class="no-break">
     feature_generator
-      2.0.0
+      2.1.0
   </span>
   
 </footer>
