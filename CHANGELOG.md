@@ -3,6 +3,9 @@
 
 ### Added
 - **New `add-usecase` command** - Add individual use cases to existing features without recreating the entire structure
+- **Automatic domain entity generation** - Creates domain entities for each use case with proper business object structure
+- **Automatic data model generation** - Creates data models with JSON serialization, extending domain entities
+- **Enhanced Clean Architecture compliance** - Use cases now work with specific entities instead of generic models
 - Automatic updates to repository interfaces, implementations, and data sources when adding new use cases
 - Enhanced CLI with `--feature` and `--usecase` flags for the new command
 - Comprehensive documentation and examples for the new functionality
@@ -12,6 +15,9 @@
 - Automatic file updates maintain clean architecture structure
 - Validates existing feature structure before adding new use cases
 - Generates complete use case files with proper imports and exports
+- Creates domain entities with equality operators and toString methods
+- Creates data models with fromJson, toJson, and copyWith methods
+- Updates repository methods to use specific entity types
 
 ## [2.1.0] - 2025-05-15
 - Added automatic PATH configuration post-install
