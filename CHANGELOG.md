@@ -1,4 +1,26 @@
 # Changelog
+## [2.3.0] - 2025-06-10
+
+### Added
+- **New `add-usecase` command** - Add individual use cases to existing features without recreating the entire structure
+- **Automatic domain entity generation** - Creates domain entities for each use case with proper business object structure
+- **Automatic data model generation** - Creates data models with JSON serialization, extending domain entities
+- **Enhanced Clean Architecture compliance** - Use cases now work with specific entities instead of generic models
+- **🆕 Automatic PATH configuration** - The `install` command now automatically adds `$HOME/.pub-cache/bin` to your shell PATH
+- Automatic updates to repository interfaces, implementations, and data sources when adding new use cases
+- Enhanced CLI with `--feature` and `--usecase` flags for the new command
+- Comprehensive documentation and examples for the new functionality
+
+### Features
+- `feature_generator add-usecase --feature=auth --usecase=resetPassword` - Add new use cases to existing features
+- Automatic file updates maintain clean architecture structure
+- Validates existing feature structure before adding new use cases
+- Generates complete use case files with proper imports and exports
+- Creates domain entities with equality operators and toString methods
+- Creates data models with fromJson, toJson, and copyWith methods
+- Updates repository methods to use specific entity types
+- **🆕 Shell detection and automatic PATH configuration** - Supports Bash, Zsh, and Fish shells
+
 ## [2.2.0] - 2025-06-09
 
 ### Added
