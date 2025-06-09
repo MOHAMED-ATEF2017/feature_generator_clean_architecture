@@ -323,3 +323,150 @@ final getIt = GetIt.instance;
 void configureDependencies() => getIt.init();
 ''');
 }
+
+/// Writes Use Case code for a specific feature and use case name
+///
+/// ```dart
+/// writeUseCaseCode(file, 'Auth', 'Login');
+/// ```
+
+void writeUseCaseCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+import '/core/use_cases/use_case.dart';
+import '../entities/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_entity.dart';
+
+@lazySingleton
+class ${useCaseName.capitalize()}${featureName.capitalize()}UseCase extends UseCases<${useCaseName.capitalize()}${featureName.capitalize()}Entity> {
+  final ${featureName.capitalize()}Repository ${featureName.toLowerCase()}Repository;
+
+  ${useCaseName.capitalize()}${featureName.capitalize()}UseCase({required this.${featureName.toLowerCase()}Repository});
+  
+  @override
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Entity>> call() async {
+    return await ${featureName.toLowerCase()}Repository.${useCaseName.toLowerCase()}();
+  }
+}
+''';
+
+  // Write the initial code to the file
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Domain Entity code for a specific feature and use case name
+///
+/// ```dart
+/// writeEntityCode(file, 'Auth', 'Login');
+/// ```
+void writeEntityCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+/// Domain entity for ${useCaseName.capitalize()} ${featureName.capitalize()}
+/// 
+/// Represents the business object structure
+class ${useCaseName.capitalize()}${featureName.capitalize()}Entity {
+  final int? id;
+  final String? message;
+  final bool? success;
+  final dynamic data;
+
+  const ${useCaseName.capitalize()}${featureName.capitalize()}Entity({
+    this.id,
+    this.message,
+    this.success,
+    this.data,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ${useCaseName.capitalize()}${featureName.capitalize()}Entity &&
+        other.id == id &&
+        other.message == message &&
+        other.success == success &&
+        other.data == data;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        message.hashCode ^
+        success.hashCode ^
+        data.hashCode;
+  }
+
+  @override
+  String toString() {
+    return '${useCaseName.capitalize()}${featureName.capitalize()}Entity(id: \$id, message: \$message, success: \$success, data: \$data)';
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Data Model code for a specific feature and use case name
+///
+/// ```dart
+/// writeModelCode(file, 'Auth', 'Login');
+/// ```
+void writeModelCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import '../../../domain/entities/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_entity.dart';
+
+/// Data model for ${useCaseName.capitalize()} ${featureName.capitalize()}
+/// 
+/// Implements the domain entity with JSON serialization
+class ${useCaseName.capitalize()}${featureName.capitalize()}Model extends ${useCaseName.capitalize()}${featureName.capitalize()}Entity {
+  const ${useCaseName.capitalize()}${featureName.capitalize()}Model({
+    super.id,
+    super.message,
+    super.success,
+    super.data,
+  });
+
+  /// Creates a model from JSON
+  factory ${useCaseName.capitalize()}${featureName.capitalize()}Model.fromJson(Map<String, dynamic> json) {
+    return ${useCaseName.capitalize()}${featureName.capitalize()}Model(
+      id: json['id'] as int?,
+      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      data: json['data'],
+    );
+  }
+
+  /// Converts the model to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'message': message,
+      'success': success,
+      'data': data,
+    };
+  }
+
+  /// Creates a copy with updated fields
+  ${useCaseName.capitalize()}${featureName.capitalize()}Model copyWith({
+    int? id,
+    String? message,
+    bool? success,
+    dynamic data,
+  }) {
+    return ${useCaseName.capitalize()}${featureName.capitalize()}Model(
+      id: id ?? this.id,
+      message: message ?? this.message,
+      success: success ?? this.success,
+      data: data ?? this.data,
+    );
+  }
+
+  @override
+  String toString() {
+    return '${useCaseName.capitalize()}${featureName.capitalize()}Model(id: \$id, message: \$message, success: \$success, data: \$data)';
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}

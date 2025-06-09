@@ -64,11 +64,26 @@ Installs required dependencies
 feature_generator create --name <FEATURE_NAME>
 ```
 
-## Example:
+## 3. Add Use Cases to Existing Features
+``` bash
+feature_generator add-usecase --feature <FEATURE_NAME> --usecase <USECASE_NAME>
+```
+
+## Examples:
 
 For create `Auth` feature 
 ``` bash
 feature_generator create --name Auth
+```
+
+For adding a `Login` use case to the `Auth` feature:
+``` bash
+feature_generator add-usecase --feature Auth --usecase Login
+```
+
+For adding a `Logout` use case to the `Auth` feature:
+``` bash
+feature_generator add-usecase --feature Auth --usecase Logout
 ```
 The core folders (`lib/core/errors` and `lib/core/use_cases`) will only exist after running the `install` command, never during feature creation.
 # Generated Structure 🌳
@@ -311,6 +326,215 @@ class FetchFEATURENAMEUseCase extends UseCases<FEATURENAMEModel> {
   @override
   Future<Either<Failure, FEATURENAMEModel>> call() async {
     return await FEATURENAMERepository.getFEATURENAME();
+  }
+}
+```
+
+# Adding Use Cases to Existing Features 🔧
+
+You can add additional use cases to an existing feature without recreating the entire feature structure. This is useful when you want to extend a feature with new business logic.
+
+## Command Usage
+```bash
+feature_generator add-usecase --feature <FEATURE_NAME> --usecase <USECASE_NAME>
+```
+
+## Example: Adding Multiple Use Cases to Auth Feature
+
+```bash
+# Create the Auth feature first
+feature_generator create --name Auth
+
+# Add Login use case
+feature_generator add-usecase --feature Auth --usecase Login
+
+# Add Logout use case  
+feature_generator add-usecase --feature Auth --usecase Logout
+
+# Add ResetPassword use case
+feature_generator add-usecase --feature Auth --usecase ResetPassword
+```
+
+## What Gets Generated
+
+When you add a use case, the tool automatically:
+
+1. **Creates the use case file** - `lib/features/auth/domain/use_cases/login_use_case.dart`
+2. **Creates the domain entity** - `lib/features/auth/domain/entities/login_auth_entity.dart`
+3. **Creates the data model** - `lib/features/auth/data/models/login_auth_model.dart`
+4. **Updates the repository interface** - Adds the new method to the abstract repository
+5. **Updates the repository implementation** - Adds the implementation in the data layer
+6. **Updates the data source** - Adds the method to both interface and implementation
+
+## Generated Files Example
+
+For `feature_generator add-usecase --feature Auth --usecase Login`:
+
+**login_use_case.dart**
+```dart
+import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+import '/core/use_cases/use_case.dart';
+import '../entities/login_auth_entity.dart';
+
+@lazySingleton
+class LoginAuthUseCase extends UseCases<LoginAuthEntity> {
+  final AuthRepository authRepository;
+
+  LoginAuthUseCase({required this.authRepository});
+  
+  @override
+  Future<Either<Failure, LoginAuthEntity>> call() async {
+    return await authRepository.login();
+  }
+}
+```
+
+**login_auth_entity.dart**
+```dart
+/// Domain entity for Login Auth
+/// 
+/// Represents the business object structure
+class LoginAuthEntity {
+  final int? id;
+  final String? message;
+  final bool? success;
+  final dynamic data;
+
+  const LoginAuthEntity({
+    this.id,
+    this.message,
+    this.success,
+    this.data,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is LoginAuthEntity &&
+        other.id == id &&
+        other.message == message &&
+        other.success == success &&
+        other.data == data;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        message.hashCode ^
+        success.hashCode ^
+        data.hashCode;
+  }
+}
+```
+
+**login_auth_model.dart**
+```dart
+import '../../../domain/entities/login_auth_entity.dart';
+
+/// Data model for Login Auth
+/// 
+/// Implements the domain entity with JSON serialization
+class LoginAuthModel extends LoginAuthEntity {
+  const LoginAuthModel({
+    super.id,
+    super.message,
+    super.success,
+    super.data,
+  });
+
+  /// Creates a model from JSON
+  factory LoginAuthModel.fromJson(Map<String, dynamic> json) {
+    return LoginAuthModel(
+      id: json['id'] as int?,
+      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      data: json['data'],
+    );
+  }
+
+  /// Converts the model to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'message': message,
+      'success': success,
+      'data': data,
+    };
+  }
+
+  /// Creates a copy with updated fields
+  LoginAuthModel copyWith({
+    int? id,
+    String? message,
+    bool? success,
+    dynamic data,
+  }) {
+    return LoginAuthModel(
+      id: id ?? this.id,
+      message: message ?? this.message,
+      success: success ?? this.success,
+      data: data ?? this.data,
+    );
+  }
+}
+```
+  }
+}
+```
+
+**Updated Repository Interface**
+```dart
+abstract class AuthRepository {
+  Future<Either<Failure, AuthModel>> getAuth();
+  Future<Either<Failure, LoginAuthEntity>> login(); // ← New method added
+}
+```
+
+**Updated Repository Implementation**
+```dart
+@override
+Future<Either<Failure, LoginAuthEntity>> login() async {
+  try {
+    LoginAuthModel request = await remoteDataSource.login();
+    return right(request);
+  } on Exception catch (e) {
+    if (e is DioException) {
+      return left(ServerFailure.fromDioException(e));
+    } else {
+      return left(ServerFailure(message: e.toString()));
+    }
+  }
+}
+```
+
+**Updated Data Source**
+```dart
+abstract class AuthRemoteDataSource {
+  Future<AuthModel> getAuth();
+  Future<LoginAuthModel> login(); // ← New method added
+}
+
+@Singleton(as: AuthRemoteDataSource)
+class AuthRemoteDataSourceImplementation extends AuthRemoteDataSource {
+  // ...existing implementation...
+  
+  @override
+  Future<LoginAuthModel> login() async {
+    final response = await dioHelper.getData(
+      ApisEndPoints.kAuthLoginUrl,
+      headers: headersMapWithToken()
+    );
+    return LoginAuthModel.fromJson(response.data ?? {});
+  }
+}
+  } on Exception catch (e) {
+    if (e is DioException) {
+      return left(ServerFailure.fromDioException(e));
+    } else {
+      return left(ServerFailure(message: e.toString()));
+    }
   }
 }
 ```

@@ -1,4 +1,18 @@
 # Changelog
+## [2.2.0] - 2025-06-09
+
+### Added
+- **New `add-usecase` command** - Add individual use cases to existing features without recreating the entire structure
+- Automatic updates to repository interfaces, implementations, and data sources when adding new use cases
+- Enhanced CLI with `--feature` and `--usecase` flags for the new command
+- Comprehensive documentation and examples for the new functionality
+
+### Features
+- `feature_generator add-usecase --feature=auth --usecase=resetPassword` - Add new use cases to existing features
+- Automatic file updates maintain clean architecture structure
+- Validates existing feature structure before adding new use cases
+- Generates complete use case files with proper imports and exports
+
 ## [2.1.0] - 2025-05-15
 - Added automatic PATH configuration post-install
 - Support for Bash/Zsh/Fish shells
