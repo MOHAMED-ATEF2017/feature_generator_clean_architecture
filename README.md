@@ -47,17 +47,26 @@ Appends to the appropriate shell config file.
 # Usage 🚀
 ## 1. Initialize Project
 
-At first , run this command to install dependacies and core folder:
+At first, run this command to install dependencies and core folder:
 ``` bash
 feature_generator install
 ```
 This creates:
 
-Core directories (`lib/core/errors`, `lib/core/use_cases`)
+- Core directories (`lib/core/errors`, `lib/core/use_cases`, `lib/core/utils`)
+- Service locator (`lib/core/utils/service_locator.dart`)
+- Installs required dependencies
+- **🆕 Automatically configures PATH** - Adds `$HOME/.pub-cache/bin` to your shell configuration
 
-Service locator (`lib/core/utils/service_locator.dart`)
+### Automatic PATH Configuration
 
-Installs required dependencies
+The `install` command now automatically:
+- Detects your shell (Bash, Zsh, Fish)
+- Adds the pub cache bin directory to your PATH
+- Updates the appropriate config file (`.bashrc`, `.zshrc`, etc.)
+- Skips if PATH is already configured
+
+No need to manually run the post-install script!
 
 ## 2. Generate Features
 ``` bash

@@ -63,6 +63,7 @@ This command:
 - Creates core directories (`lib/core/errors`, `lib/core/use_cases`, `lib/core/utils`)
 - Generates service locator configuration
 - Installs required dependencies (flutter_bloc, injectable, dartz, dio, get_it)
+- **🆕 Automatically configures PATH** - Detects your shell and adds pub cache to PATH
 
 ## Usage: Creating Your First Feature
 

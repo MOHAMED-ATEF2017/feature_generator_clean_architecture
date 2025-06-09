@@ -6,6 +6,7 @@
 - **Automatic domain entity generation** - Creates domain entities for each use case with proper business object structure
 - **Automatic data model generation** - Creates data models with JSON serialization, extending domain entities
 - **Enhanced Clean Architecture compliance** - Use cases now work with specific entities instead of generic models
+- **🆕 Automatic PATH configuration** - The `install` command now automatically adds `$HOME/.pub-cache/bin` to your shell PATH
 - Automatic updates to repository interfaces, implementations, and data sources when adding new use cases
 - Enhanced CLI with `--feature` and `--usecase` flags for the new command
 - Comprehensive documentation and examples for the new functionality
@@ -18,6 +19,7 @@
 - Creates domain entities with equality operators and toString methods
 - Creates data models with fromJson, toJson, and copyWith methods
 - Updates repository methods to use specific entity types
+- **🆕 Shell detection and automatic PATH configuration** - Supports Bash, Zsh, and Fish shells
 
 ## [2.1.0] - 2025-05-15
 - Added automatic PATH configuration post-install

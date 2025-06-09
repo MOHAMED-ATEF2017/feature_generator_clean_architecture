@@ -258,6 +258,95 @@ void installDependencies({bool createCore = true}) {
     _createServiceLocator();
   }
   _runPostInstallation();
+
+  // Automatically configure PATH after installation
+  _configurePathAutomatically();
+}
+
+/// Automatically configures the PATH to include pub cache bin directory
+void _configurePathAutomatically() {
+  try {
+    print('\n🔧 Configuring PATH...');
+
+    final configFile = _getShellConfigFile();
+    final exportCommand = _getExportCommand();
+
+    if (_pathAlreadyExists(configFile)) {
+      print('✅ PATH already configured!');
+      return;
+    }
+
+    // Create config file if it doesn't exist
+    final file = File(configFile);
+    if (!file.existsSync()) {
+      file.createSync(recursive: true);
+      print('Created config file: $configFile');
+    }
+
+    // Append the export command
+    file.writeAsStringSync(exportCommand, mode: FileMode.append);
+    print('✅ Updated $configFile');
+    print('📝 Added: export PATH="\$PATH:\$HOME/.pub-cache/bin"');
+    print('');
+    print('🎉 PATH configured successfully!');
+    print('💡 Restart your terminal or run: source $configFile');
+    print('');
+  } catch (e) {
+    print('⚠️  Warning: Could not automatically configure PATH');
+    print('Please manually add this to your shell config file:');
+    print('export PATH="\$PATH:\$HOME/.pub-cache/bin"');
+    print('');
+    print(
+        'For more details, run: dart pub global run feature_generator:_post_install');
+  }
+}
+
+/// Gets the appropriate shell config file path
+String _getShellConfigFile() {
+  if (Platform.isWindows) {
+    return _getWindowsPath();
+  }
+
+  final shell = Platform.environment['SHELL']?.split('/').last ?? 'bash';
+  switch (shell) {
+    case 'zsh':
+      return Platform.environment['ZDOTDIR'] ??
+          '${Platform.environment['HOME']}/.zshrc';
+    case 'fish':
+      return '${Platform.environment['HOME']}/.config/fish/config.fish';
+    default:
+      return '${Platform.environment['HOME']}/.bashrc';
+  }
+}
+
+/// Gets the appropriate export command for the platform
+String _getExportCommand() {
+  if (Platform.isWindows) {
+    return '\n\$env:Path += ";${Platform.environment['USERPROFILE']}\\.pub-cache\\bin"';
+  }
+  return '\nexport PATH="\$PATH:\$HOME/.pub-cache/bin"';
+}
+
+/// Gets the Windows PowerShell profile path
+String _getWindowsPath() {
+  final powerShellProfile = Platform.environment['PROFILE'] ??
+      '${Platform.environment['USERPROFILE']}\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1';
+
+  if (File(powerShellProfile).existsSync()) return powerShellProfile;
+  return '${Platform.environment['USERPROFILE']}\\.bashrc';
+}
+
+/// Checks if the PATH is already configured
+bool _pathAlreadyExists(String configFile) {
+  try {
+    final file = File(configFile);
+    if (!file.existsSync()) return false;
+
+    final content = file.readAsStringSync();
+    return content.contains('.pub-cache/bin');
+  } catch (e) {
+    return false;
+  }
 }
 
 // Add service locator creation
