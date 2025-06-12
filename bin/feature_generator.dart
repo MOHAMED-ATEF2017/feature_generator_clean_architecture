@@ -17,6 +17,20 @@ void main(List<String> args) {
         ..addFlag('install-deps', abbr: 'i', defaultsTo: false),
     )
     ..addCommand(
+      'add-usecase',
+      ArgParser()
+        ..addOption(
+          'feature',
+          abbr: 'f',
+          help: 'The feature name to add the use case to',
+        )
+        ..addOption(
+          'usecase',
+          abbr: 'u',
+          help: 'The use case name to add',
+        ),
+    )
+    ..addCommand(
         'install', ArgParser()..addFlag('core', abbr: 'c', defaultsTo: true));
 
   try {
@@ -33,6 +47,25 @@ void main(List<String> args) {
       // final installDeps = result.command!['install-deps'] as bool;
       createFeatureStructure(name,
           installDeps: result.command!['install-deps'] as bool);
+    } else if (result.command?.name == 'add-usecase') {
+      final featureName = result.command!['feature'] as String?;
+      final useCaseName = result.command!['usecase'] as String?;
+
+      if (featureName == null) {
+        print('Error: --feature is required.');
+        print('Please provide a feature name using --feature');
+        print(parser.usage);
+        return;
+      }
+
+      if (useCaseName == null) {
+        print('Error: --usecase is required.');
+        print('Please provide a use case name using --usecase');
+        print(parser.usage);
+        return;
+      }
+
+      addUseCaseToFeature(featureName, useCaseName);
     } else if (result.command?.name == 'install') {
       installDependencies(createCore: result.command!['core'] as bool);
     }

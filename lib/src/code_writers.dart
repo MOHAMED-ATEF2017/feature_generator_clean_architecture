@@ -323,3 +323,461 @@ final getIt = GetIt.instance;
 void configureDependencies() => getIt.init();
 ''');
 }
+
+/// Writes Use Case code for a specific feature and use case name
+///
+/// ```dart
+/// writeUseCaseCode(file, 'Auth', 'Login');
+/// ```
+void writeUseCaseCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+import '/core/use_cases/use_case.dart';
+import '../entities/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_entity.dart';
+
+@lazySingleton
+class ${useCaseName.capitalize()}${featureName.capitalize()}UseCase extends UseCases<${useCaseName.capitalize()}${featureName.capitalize()}Entity> {
+  final ${featureName.capitalize()}Repository ${featureName.toLowerCase()}Repository;
+
+  ${useCaseName.capitalize()}${featureName.capitalize()}UseCase({required this.${featureName.toLowerCase()}Repository});
+  
+  @override
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Entity>> call() async {
+    return await ${featureName.toLowerCase()}Repository.${useCaseName.toLowerCase()}();
+  }
+}
+''';
+
+  // Write the initial code to the file
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Use Case code for a specific feature and use case name (without entity dependency)
+///
+/// ```dart
+/// writeUseCaseCodeWithoutEntity(file, 'Auth', 'Login');
+/// ```
+void writeUseCaseCodeWithoutEntity(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+import '/core/use_cases/use_case.dart';
+import '../repositories/${featureName.toLowerCase()}_repository.dart';
+import '../../data/models/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_model.dart';
+
+@lazySingleton
+class ${useCaseName.capitalize()}${featureName.capitalize()}UseCase extends UseCases<${useCaseName.capitalize()}${featureName.capitalize()}Model> {
+  final ${featureName.capitalize()}Repository ${featureName.toLowerCase()}Repository;
+
+  ${useCaseName.capitalize()}${featureName.capitalize()}UseCase({required this.${featureName.toLowerCase()}Repository});
+  
+  @override
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Model>> call() async {
+    return await ${featureName.toLowerCase()}Repository.${useCaseName.toLowerCase()}();
+  }
+}
+''';
+
+  // Write the initial code to the file
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Domain Entity code for a specific feature and use case name
+///
+/// ```dart
+/// writeEntityCode(file, 'Auth', 'Login');
+/// ```
+void writeEntityCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+/// Domain entity for ${useCaseName.capitalize()} ${featureName.capitalize()}
+/// 
+/// Represents the business object structure
+class ${useCaseName.capitalize()}${featureName.capitalize()}Entity {
+  final int? id;
+  final String? message;
+  final bool? success;
+  final dynamic data;
+
+  const ${useCaseName.capitalize()}${featureName.capitalize()}Entity({
+    this.id,
+    this.message,
+    this.success,
+    this.data,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ${useCaseName.capitalize()}${featureName.capitalize()}Entity &&
+        other.id == id &&
+        other.message == message &&
+        other.success == success &&
+        other.data == data;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        message.hashCode ^
+        success.hashCode ^
+        data.hashCode;
+  }
+
+  @override
+  String toString() {
+    return '${useCaseName.capitalize()}${featureName.capitalize()}Entity(id: \$id, message: \$message, success: \$success, data: \$data)';
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Data Model code for a specific feature and use case name
+///
+/// ```dart
+/// writeModelCode(file, 'Auth', 'Login');
+/// ```
+void writeModelCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import '../../../domain/entities/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_entity.dart';
+
+/// Data model for ${useCaseName.capitalize()} ${featureName.capitalize()}
+/// 
+/// Implements the domain entity with JSON serialization
+class ${useCaseName.capitalize()}${featureName.capitalize()}Model extends ${useCaseName.capitalize()}${featureName.capitalize()}Entity {
+  const ${useCaseName.capitalize()}${featureName.capitalize()}Model({
+    super.id,
+    super.message,
+    super.success,
+    super.data,
+  });
+
+  /// Creates a model from JSON
+  factory ${useCaseName.capitalize()}${featureName.capitalize()}Model.fromJson(Map<String, dynamic> json) {
+    return ${useCaseName.capitalize()}${featureName.capitalize()}Model(
+      id: json['id'] as int?,
+      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      data: json['data'],
+    );
+  }
+
+  /// Converts the model to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'message': message,
+      'success': success,
+      'data': data,
+    };
+  }
+
+  /// Creates a copy with updated fields
+  ${useCaseName.capitalize()}${featureName.capitalize()}Model copyWith({
+    int? id,
+    String? message,
+    bool? success,
+    dynamic data,
+  }) {
+    return ${useCaseName.capitalize()}${featureName.capitalize()}Model(
+      id: id ?? this.id,
+      message: message ?? this.message,
+      success: success ?? this.success,
+      data: data ?? this.data,
+    );
+  }
+
+  @override
+  String toString() {
+    return '${useCaseName.capitalize()}${featureName.capitalize()}Model(id: \$id, message: \$message, success: \$success, data: \$data)';
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Empty Data Model code for a specific feature and use case name (without entity dependency)
+///
+/// ```dart
+/// writeEmptyModelCode(file, 'Auth', 'Login');
+/// ```
+void writeEmptyModelCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+/// Data model for ${useCaseName.capitalize()} ${featureName.capitalize()}
+/// 
+/// Standalone model with JSON serialization (no entity dependency)
+class ${useCaseName.capitalize()}${featureName.capitalize()}Model {
+  final int? id;
+  final String? message;
+  final bool? success;
+  final dynamic data;
+
+  const ${useCaseName.capitalize()}${featureName.capitalize()}Model({
+    this.id,
+    this.message,
+    this.success,
+    this.data,
+  });
+
+  /// Creates a model from JSON
+  factory ${useCaseName.capitalize()}${featureName.capitalize()}Model.fromJson(Map<String, dynamic> json) {
+    return ${useCaseName.capitalize()}${featureName.capitalize()}Model(
+      id: json['id'] as int?,
+      message: json['message'] as String?,
+      success: json['success'] as bool?,
+      data: json['data'],
+    );
+  }
+
+  /// Converts the model to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'message': message,
+      'success': success,
+      'data': data,
+    };
+  }
+
+  /// Creates a copy with updated fields
+  ${useCaseName.capitalize()}${featureName.capitalize()}Model copyWith({
+    int? id,
+    String? message,
+    bool? success,
+    dynamic data,
+  }) {
+    return ${useCaseName.capitalize()}${featureName.capitalize()}Model(
+      id: id ?? this.id,
+      message: message ?? this.message,
+      success: success ?? this.success,
+      data: data ?? this.data,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ${useCaseName.capitalize()}${featureName.capitalize()}Model &&
+        other.id == id &&
+        other.message == message &&
+        other.success == success &&
+        other.data == data;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        message.hashCode ^
+        success.hashCode ^
+        data.hashCode;
+  }
+
+  @override
+  String toString() {
+    return '${useCaseName.capitalize()}${featureName.capitalize()}Model(id: \$id, message: \$message, success: \$success, data: \$data)';
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Data Source code for a specific use case
+///
+/// ```dart
+/// writeDataSourceCode(file, 'Auth', 'Login');
+/// ```
+void writeDataSourceCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+//TODO: Importing the write endpoints
+// import '/core/api_helper/api_endpoints.dart';
+// import '/core/api_helper/api_headers.dart';
+// import '/core/api_helper/api_helper.dart';
+
+abstract class ${featureName.capitalize()}RemoteDataSource {
+  Future<${featureName.capitalize()}Model> get${featureName.capitalize()}();
+}
+
+@Singleton(as: ${featureName.capitalize()}RemoteDataSource)
+class ${featureName.capitalize()}RemoteDataSourceImplementation extends ${featureName.capitalize()}RemoteDataSource {
+  late ${featureName.capitalize()}Model ${featureName.toLowerCase()}Model;
+  late Response response;
+  final DioHelper dioHelper ;
+  ${featureName.capitalize()}RemoteDataSourceImplementation({required this.dioHelper});
+
+  @override
+  Future<${featureName.capitalize()}Model> get${featureName.capitalize()}() async {
+    response = await dioHelper.getData(ApisEndPoints.kGet${featureName.capitalize()}DataUrl,
+        headers: headersMapWithToken());
+    ${featureName.toLowerCase()}Model = ${featureName.capitalize()}Model.fromJson(response.data ?? {});
+    return ${featureName.toLowerCase()}Model;
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Repository Implementation code for a specific use case
+///
+/// ```dart
+/// writeRepositoryCode(file, 'Auth', 'Login');
+/// ```
+void writeRepositoryCode(File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+
+@Singleton(as: ${featureName.capitalize()}Repository)
+class ${featureName.capitalize()}RepoImpl extends ${featureName.capitalize()}Repository {
+  final ${featureName.capitalize()}RemoteDataSource remoteDataSource;
+
+  ${featureName.capitalize()}RepoImpl({required this.remoteDataSource});
+
+  @override
+  Future<Either<Failure, ${featureName.capitalize()}Model>> get${featureName.capitalize()}() async {
+    try {
+      ${featureName.capitalize()}Model request = await remoteDataSource.get${featureName.capitalize()}();
+      return right(request);
+    } on Exception catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioException(e));
+      } else {
+        return left(ServerFailure(message: e.toString()));
+      }
+    }
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Domain Repository Interface code for a specific use case
+///
+/// ```dart
+/// writeDomainRepositoryCode(file, 'Auth', 'Login');
+/// ```
+void writeDomainRepositoryCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import '/core/errors/failure.dart';
+
+abstract class ${featureName.capitalize()}Repository {
+  Future<Either<Failure, ${featureName.capitalize()}Model>> get${featureName.capitalize()}();
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Data Source code specifically for a use case
+///
+/// ```dart
+/// writeUseCaseDataSourceCode(file, 'Fe', 'Login');
+/// ```
+void writeUseCaseDataSourceCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+//TODO: Importing the write endpoints
+// import '/core/api_helper/api_endpoints.dart';
+// import '/core/api_helper/api_headers.dart';
+// import '/core/api_helper/api_helper.dart';
+
+abstract class ${useCaseName.capitalize()}RemoteDataSource {
+  Future<${useCaseName.capitalize()}${featureName.capitalize()}Model> ${useCaseName.toLowerCase()}();
+}
+
+@Singleton(as: ${useCaseName.capitalize()}RemoteDataSource)
+class ${useCaseName.capitalize()}RemoteDataSourceImplementation extends ${useCaseName.capitalize()}RemoteDataSource {
+  late ${useCaseName.capitalize()}${featureName.capitalize()}Model ${useCaseName.toLowerCase()}${featureName.capitalize()}Model;
+  late Response response;
+  final DioHelper dioHelper;
+  ${useCaseName.capitalize()}RemoteDataSourceImplementation({required this.dioHelper});
+
+  @override
+  Future<${useCaseName.capitalize()}${featureName.capitalize()}Model> ${useCaseName.toLowerCase()}() async {
+    response = await dioHelper.getData(ApisEndPoints.k${useCaseName.capitalize()}${featureName.capitalize()}Url,
+        headers: headersMapWithToken());
+    ${useCaseName.toLowerCase()}${featureName.capitalize()}Model = ${useCaseName.capitalize()}${featureName.capitalize()}Model.fromJson(response.data ?? {});
+    return ${useCaseName.toLowerCase()}${featureName.capitalize()}Model;
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Repository Implementation code specifically for a use case
+///
+/// ```dart
+/// writeUseCaseRepositoryCode(file, 'Fe', 'Login');
+/// ```
+void writeUseCaseRepositoryCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+import '../data_sources/${useCaseName.toLowerCase()}_data_source.dart';
+import '../../domain/repositories/${useCaseName.toLowerCase()}_repository.dart';
+import '../models/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_model.dart';
+
+@Singleton(as: ${useCaseName.capitalize()}Repository)
+class ${useCaseName.capitalize()}RepoImpl extends ${useCaseName.capitalize()}Repository {
+  final ${useCaseName.capitalize()}RemoteDataSource remoteDataSource;
+
+  ${useCaseName.capitalize()}RepoImpl({required this.remoteDataSource});
+
+  @override
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Model>> ${useCaseName.toLowerCase()}() async {
+    try {
+      ${useCaseName.capitalize()}${featureName.capitalize()}Model request = await remoteDataSource.${useCaseName.toLowerCase()}();
+      return right(request);
+    } on Exception catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioException(e));
+      } else {
+        return left(ServerFailure(message: e.toString()));
+      }
+    }
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Domain Repository Interface code specifically for a use case
+///
+/// ```dart
+/// writeUseCaseDomainRepositoryCode(file, 'Fe', 'Login');
+/// ```
+void writeUseCaseDomainRepositoryCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import '/core/errors/failure.dart';
+import '../../data/models/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_model.dart';
+
+abstract class ${useCaseName.capitalize()}Repository {
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Model>> ${useCaseName.toLowerCase()}();
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}

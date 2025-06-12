@@ -55,7 +55,7 @@ void _createCoreFiles() {
   final coreDirectories = [
     'lib/core/errors',
     'lib/core/use_cases',
-     'lib/core/utils',
+    'lib/core/utils',
   ];
 
   // Create core directories
@@ -69,10 +69,9 @@ void _createCoreFiles() {
       if (dir.contains('errors')) {
         _createFailureFile(directory);
       } else if (dir.contains('use_cases')) {
-        _createUseCaseFile(directory);
+        _createCoreUseCaseFile(directory);
       }
     }
-
   }
   _createServiceLocator();
 }
@@ -92,7 +91,7 @@ void _createFailureFile(Directory dir) {
 
 // Create use_case.dart
 
-void _createUseCaseFile(Directory dir) {
+void _createCoreUseCaseFile(Directory dir) {
   final useCaseFile = File('${dir.path}/use_case.dart');
   if (!useCaseFile.existsSync()) {
     useCaseFile.createSync(recursive: true);
@@ -258,12 +257,100 @@ void installDependencies({bool createCore = true}) {
     _createServiceLocator();
   }
   _runPostInstallation();
+
+  // Automatically configure PATH after installation
+  _configurePathAutomatically();
+}
+
+/// Automatically configures the PATH to include pub cache bin directory
+void _configurePathAutomatically() {
+  try {
+    print('\n🔧 Configuring PATH...');
+
+    final configFile = _getShellConfigFile();
+    final exportCommand = _getExportCommand();
+
+    if (_pathAlreadyExists(configFile)) {
+      print('✅ PATH already configured!');
+      return;
+    }
+
+    // Create config file if it doesn't exist
+    final file = File(configFile);
+    if (!file.existsSync()) {
+      file.createSync(recursive: true);
+      print('Created config file: $configFile');
+    }
+
+    // Append the export command
+    file.writeAsStringSync(exportCommand, mode: FileMode.append);
+    print('✅ Updated $configFile');
+    print('📝 Added: export PATH="\$PATH:\$HOME/.pub-cache/bin"');
+    print('');
+    print('🎉 PATH configured successfully!');
+    print('💡 Restart your terminal or run: source $configFile');
+    print('');
+  } catch (e) {
+    print('⚠️  Warning: Could not automatically configure PATH');
+    print('Please manually add this to your shell config file:');
+    print('export PATH="\$PATH:\$HOME/.pub-cache/bin"');
+    print('');
+    print(
+        'For more details, run: dart pub global run feature_generator:_post_install');
+  }
+}
+
+/// Gets the appropriate shell config file path
+String _getShellConfigFile() {
+  if (Platform.isWindows) {
+    return _getWindowsPath();
+  }
+
+  final shell = Platform.environment['SHELL']?.split('/').last ?? 'bash';
+  switch (shell) {
+    case 'zsh':
+      return Platform.environment['ZDOTDIR'] ??
+          '${Platform.environment['HOME']}/.zshrc';
+    case 'fish':
+      return '${Platform.environment['HOME']}/.config/fish/config.fish';
+    default:
+      return '${Platform.environment['HOME']}/.bashrc';
+  }
+}
+
+/// Gets the appropriate export command for the platform
+String _getExportCommand() {
+  if (Platform.isWindows) {
+    return '\n\$env:Path += ";${Platform.environment['USERPROFILE']}\\.pub-cache\\bin"';
+  }
+  return '\nexport PATH="\$PATH:\$HOME/.pub-cache/bin"';
+}
+
+/// Gets the Windows PowerShell profile path
+String _getWindowsPath() {
+  final powerShellProfile = Platform.environment['PROFILE'] ??
+      '${Platform.environment['USERPROFILE']}\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1';
+
+  if (File(powerShellProfile).existsSync()) return powerShellProfile;
+  return '${Platform.environment['USERPROFILE']}\\.bashrc';
+}
+
+/// Checks if the PATH is already configured
+bool _pathAlreadyExists(String configFile) {
+  try {
+    final file = File(configFile);
+    if (!file.existsSync()) return false;
+
+    final content = file.readAsStringSync();
+    return content.contains('.pub-cache/bin');
+  } catch (e) {
+    return false;
+  }
 }
 
 // Add service locator creation
 void _createServiceLocator() {
-
-   final utilsDir = Directory('lib/core/utils');
+  final utilsDir = Directory('lib/core/utils');
   if (!utilsDir.existsSync()) {
     utilsDir.createSync(recursive: true);
   }
@@ -272,4 +359,149 @@ void _createServiceLocator() {
     writeServiceLocatorCode(file);
     print('Created service locator: ${file.path} ✓');
   }
+}
+
+/// Adds a new use case to an existing feature
+///
+/// ```dart
+/// addUseCaseToFeature('Auth', 'Login');
+/// ```
+void addUseCaseToFeature(String featureName, String useCaseName) {
+  // Validate feature exists
+  final featurePath = '${Directory.current.path}/lib/features/$featureName';
+  final featureDir = Directory(featurePath);
+
+  if (!featureDir.existsSync()) {
+    print('❌ Error: Feature "$featureName" does not exist.');
+    print(
+        'Please create the feature first using: feature_generator create --name $featureName');
+    return;
+  }
+
+  // Check if use case already exists
+  final useCasePath = '$featurePath/domain/use_cases';
+  final useCaseFileName = '${useCaseName.toLowerCase()}_use_case.dart';
+  final useCaseFile = File('$useCasePath/$useCaseFileName');
+
+  if (useCaseFile.existsSync()) {
+    print(
+        '❌ Error: Use case "$useCaseName" already exists in feature "$featureName".');
+    return;
+  }
+
+  // Create the use case directory if it doesn't exist
+  final useCaseDir = Directory(useCasePath);
+  if (!useCaseDir.existsSync()) {
+    useCaseDir.createSync(recursive: true);
+    print('Created directory: $useCasePath ✓');
+  }
+
+  // Create individual files for the use case
+  _createUseCaseDataSource(featureName, useCaseName);
+  _createUseCaseRepository(featureName, useCaseName);
+  _createUseCaseDomainRepository(featureName, useCaseName);
+  _createUseCaseFile(featureName, useCaseName);
+
+  // Create empty data model
+  _createEmptyDataModel(featureName, useCaseName);
+
+  print(
+      '✅ Successfully added use case "$useCaseName" to feature "$featureName"');
+  print('📝 Don\'t forget to:');
+  print('   1. Implement the actual logic in the repository and data source');
+  print('   2. Add the model class properties if needed');
+  print(
+      '   3. Run: flutter pub run build_runner build --delete-conflicting-outputs');
+}
+
+/// Creates an empty data model file for the use case
+void _createEmptyDataModel(String featureName, String useCaseName) {
+  final modelPath =
+      '${Directory.current.path}/lib/features/$featureName/data/models';
+  final modelDir = Directory(modelPath);
+
+  if (!modelDir.existsSync()) {
+    modelDir.createSync(recursive: true);
+    print('Created directory: $modelPath ✓');
+  }
+
+  final modelFileName =
+      '${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_model.dart';
+  final modelFile = File('$modelPath/$modelFileName');
+
+  if (modelFile.existsSync()) {
+    print('⚠️  Model already exists: ${modelFile.path}');
+    return;
+  }
+
+  modelFile.createSync();
+  writeEmptyModelCode(modelFile, featureName, useCaseName);
+  print('Created empty model: ${modelFile.path} ✓');
+}
+
+/// Creates or reuses the data source file for the use case
+void _createUseCaseDataSource(String featureName, String useCaseName) {
+  final dataSourcePath =
+      '${Directory.current.path}/lib/features/$featureName/data/data_sources';
+  final dataSourceFile =
+      File('$dataSourcePath/${useCaseName.toLowerCase()}_data_source.dart');
+
+  if (dataSourceFile.existsSync()) {
+    print('Data source file already exists: ${dataSourceFile.path}');
+    return;
+  }
+
+  dataSourceFile.createSync();
+  writeUseCaseDataSourceCode(dataSourceFile, featureName, useCaseName);
+  print('Created data source file: ${dataSourceFile.path} ✓');
+}
+
+/// Creates or reuses the repository implementation file
+void _createUseCaseRepository(String featureName, String useCaseName) {
+  final repoPath =
+      '${Directory.current.path}/lib/features/$featureName/data/repo';
+  final repoFile = File('$repoPath/${useCaseName.toLowerCase()}_repo.dart');
+
+  if (repoFile.existsSync()) {
+    print('Repository file already exists: ${repoFile.path}');
+    return;
+  }
+
+  repoFile.createSync();
+  writeUseCaseRepositoryCode(repoFile, featureName, useCaseName);
+  print('Created repository file: ${repoFile.path} ✓');
+}
+
+/// Creates or reuses the domain repository interface
+void _createUseCaseDomainRepository(String featureName, String useCaseName) {
+  final domainRepoPath =
+      '${Directory.current.path}/lib/features/$featureName/domain/repositories';
+  final domainRepoFile =
+      File('$domainRepoPath/${useCaseName.toLowerCase()}_repository.dart');
+
+  if (domainRepoFile.existsSync()) {
+    print('Domain repository file already exists: ${domainRepoFile.path}');
+    return;
+  }
+
+  domainRepoFile.createSync();
+  writeUseCaseDomainRepositoryCode(domainRepoFile, featureName, useCaseName);
+  print('Created domain repository file: ${domainRepoFile.path} ✓');
+}
+
+/// Creates the use case file
+void _createUseCaseFile(String featureName, String useCaseName) {
+  final useCasePath =
+      '${Directory.current.path}/lib/features/$featureName/domain/use_cases';
+  final useCaseFileName = '${useCaseName.toLowerCase()}_use_case.dart';
+  final useCaseFile = File('$useCasePath/$useCaseFileName');
+
+  if (useCaseFile.existsSync()) {
+    print('Use case file already exists: ${useCaseFile.path}');
+    return;
+  }
+
+  useCaseFile.createSync();
+  writeUseCaseCodeWithoutEntity(useCaseFile, featureName, useCaseName);
+  print('Created use case file: ${useCaseFile.path} ✓');
 }
