@@ -1,19 +1,19 @@
 name: feature_generator
 description: A CLI tool to generate Clean Architecture feature structure for Flutter projects
-version: 2.3.0
+version: 2.4.0
 license: BSD-3-Clause
 repository: https://github.com/MOHAMED-ATEF2017/feature_generator.git
 # repository: https://github.com/my_org/my_repo
-documentation: https://pub.dev/documentation/feature_generator/latest/  
+documentation: https://pub.dev/documentation/feature_generator/latest/
 environment:
-  sdk: '>=2.17.0 <4.0.0'
-  flutter: '>=3.19.0'
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=3.19.0"
 
 # Add regular dependencies here.
 dependencies:
-  path: ^1.9.1 
+  path: ^1.9.1
   args: ^2.7.0
-  flutter_bloc: ^9.1.1 
+  flutter_bloc: ^9.1.1
   injectable: ^2.5.0
   dartz: ^0.10.1
   dio: ^5.8.0+1
@@ -27,7 +27,7 @@ dev_dependencies:
   mockito: ^5.4.6
   test: ^1.25.15
   very_good_analysis: ^7.0.0
-  
+
 executables:
   feature_generator:
   _post_install: post_install
@@ -36,4 +36,3 @@ scripts:
   post_install:
     exec: dart run _post_install
     description: Updates PATH after installation
-  

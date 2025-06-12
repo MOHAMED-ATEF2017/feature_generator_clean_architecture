@@ -6,7 +6,6 @@
 import 'dart:io';
 
 import 'package:feature_generator/src/code_writers.dart';
-import 'package:feature_generator/src/extensions.dart';
 
 /// Writes featue files and directories to the specified path.
 ///
@@ -70,7 +69,7 @@ void _createCoreFiles() {
       if (dir.contains('errors')) {
         _createFailureFile(directory);
       } else if (dir.contains('use_cases')) {
-        _createUseCaseFile(directory);
+        _createCoreUseCaseFile(directory);
       }
     }
   }
@@ -92,7 +91,7 @@ void _createFailureFile(Directory dir) {
 
 // Create use_case.dart
 
-void _createUseCaseFile(Directory dir) {
+void _createCoreUseCaseFile(Directory dir) {
   final useCaseFile = File('${dir.path}/use_case.dart');
   if (!useCaseFile.existsSync()) {
     useCaseFile.createSync(recursive: true);
@@ -397,175 +396,26 @@ void addUseCaseToFeature(String featureName, String useCaseName) {
     print('Created directory: $useCasePath ✓');
   }
 
-  // Create the use case file
-  useCaseFile.createSync();
-  writeUseCaseCode(useCaseFile, featureName, useCaseName);
-  print('Created use case: ${useCaseFile.path} ✓');
+  // Create individual files for the use case
+  _createUseCaseDataSource(featureName, useCaseName);
+  _createUseCaseRepository(featureName, useCaseName);
+  _createUseCaseDomainRepository(featureName, useCaseName);
+  _createUseCaseFile(featureName, useCaseName);
 
-  // Create domain entity
-  _createDomainEntity(featureName, useCaseName);
-
-  // Create data model
-  _createDataModel(featureName, useCaseName);
-
-  // Update the repository interface to include the new method
-  _updateRepositoryInterface(featureName, useCaseName);
-
-  // Update the repository implementation to include the new method
-  _updateRepositoryImplementation(featureName, useCaseName);
-
-  // Update the data source interface and implementation
-  _updateDataSource(featureName, useCaseName);
+  // Create empty data model
+  _createEmptyDataModel(featureName, useCaseName);
 
   print(
       '✅ Successfully added use case "$useCaseName" to feature "$featureName"');
   print('📝 Don\'t forget to:');
   print('   1. Implement the actual logic in the repository and data source');
-  print('   2. Add the model class if needed');
+  print('   2. Add the model class properties if needed');
   print(
       '   3. Run: flutter pub run build_runner build --delete-conflicting-outputs');
 }
 
-/// Updates the repository interface to include the new use case method
-void _updateRepositoryInterface(String featureName, String useCaseName) {
-  final repositoryPath =
-      '${Directory.current.path}/lib/features/$featureName/domain/repositories';
-  final repositoryFileName = '${featureName.toLowerCase()}_repository.dart';
-  final repositoryFile = File('$repositoryPath/$repositoryFileName');
-
-  if (!repositoryFile.existsSync()) {
-    print('⚠️  Warning: Repository interface not found, skipping update');
-    return;
-  }
-
-  final content = repositoryFile.readAsStringSync();
-  final methodName = useCaseName.toLowerCase();
-  final newMethod =
-      '  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Entity>> $methodName();';
-
-  // Add the new method before the closing brace
-  final updatedContent = content.replaceFirst(
-    RegExp(r'}\s*$'),
-    '$newMethod\n}',
-  );
-
-  repositoryFile.writeAsStringSync(updatedContent);
-  print('Updated repository interface: ${repositoryFile.path} ✓');
-}
-
-/// Updates the repository implementation to include the new use case method
-void _updateRepositoryImplementation(String featureName, String useCaseName) {
-  final repoPath =
-      '${Directory.current.path}/lib/features/$featureName/data/repo';
-  final repoFileName = '${featureName.toLowerCase()}_repo.dart';
-  final repoFile = File('$repoPath/$repoFileName');
-
-  if (!repoFile.existsSync()) {
-    print('⚠️  Warning: Repository implementation not found, skipping update');
-    return;
-  }
-
-  final content = repoFile.readAsStringSync();
-  final methodName = useCaseName.toLowerCase();
-  final capitalizedFeature = featureName.capitalize();
-
-  final newMethod = '''
-  
-  @override
-  Future<Either<Failure, ${useCaseName.capitalize()}${capitalizedFeature}Entity>> $methodName() async {
-    try {
-      ${useCaseName.capitalize()}${capitalizedFeature}Model request = await remoteDataSource.$methodName();
-      return right(request);
-    } on Exception catch (e) {
-      if (e is DioException) {
-        return left(ServerFailure.fromDioException(e));
-      } else {
-        return left(ServerFailure(message: e.toString()));
-      }
-    }
-  }''';
-
-  // Add the new method before the closing brace
-  final updatedContent = content.replaceFirst(
-    RegExp(r'}\s*$'),
-    '$newMethod\n}',
-  );
-
-  repoFile.writeAsStringSync(updatedContent);
-  print('Updated repository implementation: ${repoFile.path} ✓');
-}
-
-/// Updates the data source interface and implementation
-void _updateDataSource(String featureName, String useCaseName) {
-  final dataSourcePath =
-      '${Directory.current.path}/lib/features/$featureName/data/data_sources';
-  final dataSourceFileName = '${featureName.toLowerCase()}_data_source.dart';
-  final dataSourceFile = File('$dataSourcePath/$dataSourceFileName');
-
-  if (!dataSourceFile.existsSync()) {
-    print('⚠️  Warning: Data source not found, skipping update');
-    return;
-  }
-
-  final content = dataSourceFile.readAsStringSync();
-  final methodName = useCaseName.toLowerCase();
-  final capitalizedFeature = featureName.capitalize();
-
-  // Add method to abstract class
-  final abstractMethod =
-      '  Future<${useCaseName.capitalize()}${capitalizedFeature}Model> $methodName();';
-  final abstractUpdatedContent = content.replaceFirst(
-    RegExp(r'(?=}\s*@Singleton)'),
-    '$abstractMethod\n',
-  );
-
-  // Add method to implementation class
-  final implementationMethod = '''
-  
-  @override
-  Future<${useCaseName.capitalize()}${capitalizedFeature}Model> $methodName() async {
-    response = await dioHelper.getData(ApisEndPoints.k$capitalizedFeature${useCaseName.capitalize()}Url,
-        headers: headersMapWithToken());
-    ${useCaseName.toLowerCase()}${featureName.capitalize()}Model = ${useCaseName.capitalize()}${capitalizedFeature}Model.fromJson(response.data ?? {});
-    return ${useCaseName.toLowerCase()}${featureName.capitalize()}Model;
-  }''';
-
-  final finalContent = abstractUpdatedContent.replaceFirst(
-    RegExp(r'}\s*$'),
-    '$implementationMethod\n}',
-  );
-
-  dataSourceFile.writeAsStringSync(finalContent);
-  print('Updated data source: ${dataSourceFile.path} ✓');
-}
-
-/// Creates a domain entity file for the use case
-void _createDomainEntity(String featureName, String useCaseName) {
-  final entityPath =
-      '${Directory.current.path}/lib/features/$featureName/domain/entities';
-  final entityDir = Directory(entityPath);
-
-  if (!entityDir.existsSync()) {
-    entityDir.createSync(recursive: true);
-    print('Created directory: $entityPath ✓');
-  }
-
-  final entityFileName =
-      '${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_entity.dart';
-  final entityFile = File('$entityPath/$entityFileName');
-
-  if (entityFile.existsSync()) {
-    print('⚠️  Entity already exists: ${entityFile.path}');
-    return;
-  }
-
-  entityFile.createSync();
-  writeEntityCode(entityFile, featureName, useCaseName);
-  print('Created entity: ${entityFile.path} ✓');
-}
-
-/// Creates a data model file for the use case
-void _createDataModel(String featureName, String useCaseName) {
+/// Creates an empty data model file for the use case
+void _createEmptyDataModel(String featureName, String useCaseName) {
   final modelPath =
       '${Directory.current.path}/lib/features/$featureName/data/models';
   final modelDir = Directory(modelPath);
@@ -585,6 +435,73 @@ void _createDataModel(String featureName, String useCaseName) {
   }
 
   modelFile.createSync();
-  writeModelCode(modelFile, featureName, useCaseName);
-  print('Created model: ${modelFile.path} ✓');
+  writeEmptyModelCode(modelFile, featureName, useCaseName);
+  print('Created empty model: ${modelFile.path} ✓');
+}
+
+/// Creates or reuses the data source file for the feature
+void _createUseCaseDataSource(String featureName, String useCaseName) {
+  final dataSourcePath =
+      '${Directory.current.path}/lib/features/$featureName/data/data_sources';
+  final dataSourceFile =
+      File('$dataSourcePath/${featureName.toLowerCase()}_data_source.dart');
+
+  if (dataSourceFile.existsSync()) {
+    print('Data source file already exists: ${dataSourceFile.path}');
+    return;
+  }
+
+  dataSourceFile.createSync();
+  writeDataSourceCode(dataSourceFile, featureName, useCaseName);
+  print('Created data source file: ${dataSourceFile.path} ✓');
+}
+
+/// Creates or reuses the repository implementation file
+void _createUseCaseRepository(String featureName, String useCaseName) {
+  final repoPath =
+      '${Directory.current.path}/lib/features/$featureName/data/repo';
+  final repoFile = File('$repoPath/${featureName.toLowerCase()}_repo.dart');
+
+  if (repoFile.existsSync()) {
+    print('Repository file already exists: ${repoFile.path}');
+    return;
+  }
+
+  repoFile.createSync();
+  writeRepositoryCode(repoFile, featureName, useCaseName);
+  print('Created repository file: ${repoFile.path} ✓');
+}
+
+/// Creates or reuses the domain repository interface
+void _createUseCaseDomainRepository(String featureName, String useCaseName) {
+  final domainRepoPath =
+      '${Directory.current.path}/lib/features/$featureName/domain/repositories';
+  final domainRepoFile =
+      File('$domainRepoPath/${featureName.toLowerCase()}_repository.dart');
+
+  if (domainRepoFile.existsSync()) {
+    print('Domain repository file already exists: ${domainRepoFile.path}');
+    return;
+  }
+
+  domainRepoFile.createSync();
+  writeDomainRepositoryCode(domainRepoFile, featureName, useCaseName);
+  print('Created domain repository file: ${domainRepoFile.path} ✓');
+}
+
+/// Creates the use case file
+void _createUseCaseFile(String featureName, String useCaseName) {
+  final useCasePath =
+      '${Directory.current.path}/lib/features/$featureName/domain/use_cases';
+  final useCaseFileName = '${useCaseName.toLowerCase()}_use_case.dart';
+  final useCaseFile = File('$useCasePath/$useCaseFileName');
+
+  if (useCaseFile.existsSync()) {
+    print('Use case file already exists: ${useCaseFile.path}');
+    return;
+  }
+
+  useCaseFile.createSync();
+  writeUseCaseCodeWithoutEntity(useCaseFile, featureName, useCaseName);
+  print('Created use case file: ${useCaseFile.path} ✓');
 }
