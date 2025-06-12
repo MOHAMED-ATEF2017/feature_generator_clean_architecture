@@ -9,7 +9,12 @@ export 'src/code_writers.dart'
         writeStateCode,
         writeUseCaseCode,
         writeEntityCode,
-        writeModelCode;
+        writeModelCode,
+        writeUseCaseCodeWithoutEntity,
+        writeEmptyModelCode,
+        writeUseCaseDataSourceCode,
+        writeUseCaseRepositoryCode,
+        writeUseCaseDomainRepositoryCode;
 export 'src/directory_creator.dart'
     show createFeatureStructure, addUseCaseToFeature;
 export 'src/extensions.dart' show StringCapitalization;

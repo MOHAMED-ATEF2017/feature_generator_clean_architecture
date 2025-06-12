@@ -439,12 +439,12 @@ void _createEmptyDataModel(String featureName, String useCaseName) {
   print('Created empty model: ${modelFile.path} ✓');
 }
 
-/// Creates or reuses the data source file for the feature
+/// Creates or reuses the data source file for the use case
 void _createUseCaseDataSource(String featureName, String useCaseName) {
   final dataSourcePath =
       '${Directory.current.path}/lib/features/$featureName/data/data_sources';
   final dataSourceFile =
-      File('$dataSourcePath/${featureName.toLowerCase()}_data_source.dart');
+      File('$dataSourcePath/${useCaseName.toLowerCase()}_data_source.dart');
 
   if (dataSourceFile.existsSync()) {
     print('Data source file already exists: ${dataSourceFile.path}');
@@ -452,7 +452,7 @@ void _createUseCaseDataSource(String featureName, String useCaseName) {
   }
 
   dataSourceFile.createSync();
-  writeDataSourceCode(dataSourceFile, featureName, useCaseName);
+  writeUseCaseDataSourceCode(dataSourceFile, featureName, useCaseName);
   print('Created data source file: ${dataSourceFile.path} ✓');
 }
 
@@ -460,7 +460,7 @@ void _createUseCaseDataSource(String featureName, String useCaseName) {
 void _createUseCaseRepository(String featureName, String useCaseName) {
   final repoPath =
       '${Directory.current.path}/lib/features/$featureName/data/repo';
-  final repoFile = File('$repoPath/${featureName.toLowerCase()}_repo.dart');
+  final repoFile = File('$repoPath/${useCaseName.toLowerCase()}_repo.dart');
 
   if (repoFile.existsSync()) {
     print('Repository file already exists: ${repoFile.path}');
@@ -468,7 +468,7 @@ void _createUseCaseRepository(String featureName, String useCaseName) {
   }
 
   repoFile.createSync();
-  writeRepositoryCode(repoFile, featureName, useCaseName);
+  writeUseCaseRepositoryCode(repoFile, featureName, useCaseName);
   print('Created repository file: ${repoFile.path} ✓');
 }
 
@@ -477,7 +477,7 @@ void _createUseCaseDomainRepository(String featureName, String useCaseName) {
   final domainRepoPath =
       '${Directory.current.path}/lib/features/$featureName/domain/repositories';
   final domainRepoFile =
-      File('$domainRepoPath/${featureName.toLowerCase()}_repository.dart');
+      File('$domainRepoPath/${useCaseName.toLowerCase()}_repository.dart');
 
   if (domainRepoFile.existsSync()) {
     print('Domain repository file already exists: ${domainRepoFile.path}');
@@ -485,7 +485,7 @@ void _createUseCaseDomainRepository(String featureName, String useCaseName) {
   }
 
   domainRepoFile.createSync();
-  writeDomainRepositoryCode(domainRepoFile, featureName, useCaseName);
+  writeUseCaseDomainRepositoryCode(domainRepoFile, featureName, useCaseName);
   print('Created domain repository file: ${domainRepoFile.path} ✓');
 }
 

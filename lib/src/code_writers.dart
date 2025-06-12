@@ -681,3 +681,103 @@ abstract class ${featureName.capitalize()}Repository {
 
   file.writeAsStringSync(initialCode);
 }
+
+/// Writes Data Source code specifically for a use case
+///
+/// ```dart
+/// writeUseCaseDataSourceCode(file, 'Fe', 'Login');
+/// ```
+void writeUseCaseDataSourceCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+//TODO: Importing the write endpoints
+// import '/core/api_helper/api_endpoints.dart';
+// import '/core/api_helper/api_headers.dart';
+// import '/core/api_helper/api_helper.dart';
+
+abstract class ${useCaseName.capitalize()}RemoteDataSource {
+  Future<${useCaseName.capitalize()}${featureName.capitalize()}Model> ${useCaseName.toLowerCase()}();
+}
+
+@Singleton(as: ${useCaseName.capitalize()}RemoteDataSource)
+class ${useCaseName.capitalize()}RemoteDataSourceImplementation extends ${useCaseName.capitalize()}RemoteDataSource {
+  late ${useCaseName.capitalize()}${featureName.capitalize()}Model ${useCaseName.toLowerCase()}${featureName.capitalize()}Model;
+  late Response response;
+  final DioHelper dioHelper;
+  ${useCaseName.capitalize()}RemoteDataSourceImplementation({required this.dioHelper});
+
+  @override
+  Future<${useCaseName.capitalize()}${featureName.capitalize()}Model> ${useCaseName.toLowerCase()}() async {
+    response = await dioHelper.getData(ApisEndPoints.k${useCaseName.capitalize()}${featureName.capitalize()}Url,
+        headers: headersMapWithToken());
+    ${useCaseName.toLowerCase()}${featureName.capitalize()}Model = ${useCaseName.capitalize()}${featureName.capitalize()}Model.fromJson(response.data ?? {});
+    return ${useCaseName.toLowerCase()}${featureName.capitalize()}Model;
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Repository Implementation code specifically for a use case
+///
+/// ```dart
+/// writeUseCaseRepositoryCode(file, 'Fe', 'Login');
+/// ```
+void writeUseCaseRepositoryCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import '/core/errors/failure.dart';
+import '../data_sources/${useCaseName.toLowerCase()}_data_source.dart';
+import '../../domain/repositories/${useCaseName.toLowerCase()}_repository.dart';
+import '../models/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_model.dart';
+
+@Singleton(as: ${useCaseName.capitalize()}Repository)
+class ${useCaseName.capitalize()}RepoImpl extends ${useCaseName.capitalize()}Repository {
+  final ${useCaseName.capitalize()}RemoteDataSource remoteDataSource;
+
+  ${useCaseName.capitalize()}RepoImpl({required this.remoteDataSource});
+
+  @override
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Model>> ${useCaseName.toLowerCase()}() async {
+    try {
+      ${useCaseName.capitalize()}${featureName.capitalize()}Model request = await remoteDataSource.${useCaseName.toLowerCase()}();
+      return right(request);
+    } on Exception catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioException(e));
+      } else {
+        return left(ServerFailure(message: e.toString()));
+      }
+    }
+  }
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
+
+/// Writes Domain Repository Interface code specifically for a use case
+///
+/// ```dart
+/// writeUseCaseDomainRepositoryCode(file, 'Fe', 'Login');
+/// ```
+void writeUseCaseDomainRepositoryCode(
+    File file, String featureName, String useCaseName) {
+  final String initialCode = '''
+import 'package:dartz/dartz.dart';
+import '/core/errors/failure.dart';
+import '../../data/models/${useCaseName.toLowerCase()}_${featureName.toLowerCase()}_model.dart';
+
+abstract class ${useCaseName.capitalize()}Repository {
+  Future<Either<Failure, ${useCaseName.capitalize()}${featureName.capitalize()}Model>> ${useCaseName.toLowerCase()}();
+}
+''';
+
+  file.writeAsStringSync(initialCode);
+}
