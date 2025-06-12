@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.1] - 2025-06-12
+
+### Fixed
+
+- **🔧 File Naming Issue** - Fixed critical bug where `add-usecase` command created files named after feature instead of use case
+- Files now correctly named: `login_repository.dart` instead of `fe_repository.dart`
+- Class names now follow use case naming: `LoginRepository` instead of `FeRepository`
+- Individual repository files are now created for each use case as intended
+- Data source files properly named after use case: `login_data_source.dart`
+
+### Improved
+
+- Enhanced file organization with proper use case-specific naming
+- Better separation of concerns with individual files per use case
+- More intuitive file structure for developers
+
 ## [2.4.0] - 2025-06-12
 
 ### Changed
